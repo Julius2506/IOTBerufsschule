@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Terrarium Übersicht</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Terrarium Übersicht</h1>
+
+    {% if terrariums %}
+        <div class="card-container">
+            {% for terrarium in terrariums %}
+                <div class="card">
+                    <h2>{{ terrarium[1] }}</h2>
+                    <p><strong>Beschreibung:</strong> {{ terrarium[2] or "Keine Beschreibung" }}</p>
+                    <p><strong>Arduino-ID:</strong> {{ terrarium[3] }}</p>
+                    <p><strong>Preset:</strong> {{ terrarium[4] or "Kein Preset" }}</p>
+                    <a href="/terrarium/{{ terrarium[0] }}">Details ansehen</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Es sind noch keine Terrarien vorhanden.</p>
+    {% endif %}
+</body>
+</html>

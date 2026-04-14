@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Terrarium Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="/">← Zurück zur Übersicht</a>
+
+    {% if terrarium %}
+        <h1>{{ terrarium[1] }}</h1>
+
+        <p><strong>Beschreibung:</strong> {{ terrarium[2] or "Keine Beschreibung" }}</p>
+        <p><strong>Arduino-ID:</strong> {{ terrarium[3] }}</p>
+        <p><strong>Preset:</strong> {{ terrarium[4] or "Kein Preset" }}</p>
+
+        <h2>Preset-Werte</h2>
+        <ul>
+            <li>Temperatur: {{ terrarium[5] }} bis {{ terrarium[6] }} °C</li>
+            <li>Luftfeuchtigkeit: {{ terrarium[7] }} bis {{ terrarium[8] }} %</li>
+            <li>Licht: {{ terrarium[9] }} bis {{ terrarium[10] }}</li>
+        </ul>
+
+        <h2>Letzte Messwerte</h2>
+
+        {% if readings %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Zeit</th>
+                        <th>Temperatur</th>
+                        <th>Luftfeuchtigkeit</th>
+                        <th>Licht</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reading in readings %}
+                        <tr>
+                            <td>{{ reading[3] }}</td>
+                            <td>{{ reading[0] }} °C</td>
+                            <td>{{ reading[1] }} %</td>
+                            <td>{{ reading[2] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Noch keine Messwerte vorhanden.</p>
+        {% endif %}
+    {% else %}
+        <p>Terrarium nicht gefunden.</p>
+    {% endif %}
+</body>
+</html>
