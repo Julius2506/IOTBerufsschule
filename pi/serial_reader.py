@@ -1,9 +1,27 @@
 import json
 import serial
 import time
+from database import get_connection
 
 PORT = "/dev/ttyACM0"
 BAUDRATE = 9600
+
+def save_reading(data):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO sensor_readings (arduino_id, temperature, humidity, light)
+        VALUES (?, ?, ?, ?)
+    """, (
+        data.get("arduino_id"),
+        data.get("temperature"),
+        data.get("humidity"),
+        data.get("light")
+    ))
+
+    conn.commit()
+    conn.close()
 
 def main():
     print(f"Verbinde mit {PORT} bei {BAUDRATE} Baud...")
@@ -23,12 +41,17 @@ def main():
 
                     try:
                         data = json.loads(line)
+
                         print("Gelesene Daten:")
                         print(f"  Arduino-ID:  {data.get('arduino_id')}")
                         print(f"  Temperatur:  {data.get('temperature')} °C")
                         print(f"  Luftfeuchte: {data.get('humidity')} %")
                         print(f"  Licht:       {data.get('light')}")
+
+                        save_reading(data)
+                        print("  -> In Datenbank gespeichert")
                         print("-" * 40)
+
                     except json.JSONDecodeError:
                         print("Fehler: Ungültiges JSON empfangen")
                         print("-" * 40)
