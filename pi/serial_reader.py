@@ -28,6 +28,9 @@ def save_reading(data):
     arduino_id = data.get("arduino_id")
     terrarium_id = get_terrarium_id_by_arduino_id(arduino_id)
 
+    if terrarium_id is None:
+        return None
+
     conn = get_connection()
     cursor = conn.cursor()
 

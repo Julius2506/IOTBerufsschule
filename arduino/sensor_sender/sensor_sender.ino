@@ -9,7 +9,7 @@ void loop() {
   float humidity = 60.2;
   int light = 320;
 
-  Serial.print("{\"arduino_id\":\"1\",\"temperature\":");
+  Serial.print("{\"arduino_id\":\"terra1\",\"temperature\":");
   Serial.print(temperature);
   Serial.print(",\"humidity\":");
   Serial.print(humidity);
