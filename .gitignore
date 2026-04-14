@@ -1,3 +1,14 @@
-venv/
+# Python
 __pycache__/
+*.pyc
+
+# Virtuelle Umgebung
+venv/
+pi/venv/
+
+# Datenbanken
 *.db
+
+# Betriebssystem-Dateien
+.DS_Store
+Thumbs.db
