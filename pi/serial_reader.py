@@ -31,28 +31,24 @@ def save_reading(data):
     if terrarium_id is None:
         return None
 
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        INSERT INTO sensor_readings (
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO sensor_readings (
+                arduino_id,
+                terrarium_id,
+                temperature,
+                humidity,
+                light
+            )
+            VALUES (?, ?, ?, ?, ?)
+        """, (
             arduino_id,
             terrarium_id,
-            temperature,
-            humidity,
-            light
-        )
-        VALUES (?, ?, ?, ?, ?)
-    """, (
-        arduino_id,
-        terrarium_id,
-        data.get("temperature"),
-        data.get("humidity"),
-        data.get("light")
-    ))
-
-    conn.commit()
-    conn.close()
+            data.get("temperature"),
+            data.get("humidity"),
+            data.get("light")
+        ))
 
     return terrarium_id
 

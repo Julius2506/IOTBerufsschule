@@ -20,6 +20,18 @@
                     <p><strong>Beschreibung:</strong> {{ terrarium[2] or "Keine Beschreibung" }}</p>
                     <p><strong>Arduino-ID:</strong> {{ terrarium[3] }}</p>
                     <p><strong>Preset:</strong> {{ terrarium[4] or "Kein Preset" }}</p>
+
+                    <h3>Aktuelle Werte</h3>
+
+                    {% if terrarium[5] is not none %}
+                        <p><strong>Temperatur:</strong> {{ terrarium[5] }} °C</p>
+                        <p><strong>Luftfeuchtigkeit:</strong> {{ terrarium[6] }} %</p>
+                        <p><strong>Licht:</strong> {{ terrarium[7] }}</p>
+                        <p><strong>Letzte Messung:</strong> {{ terrarium[8] }}</p>
+                    {% else %}
+                        <p>Noch keine Messwerte vorhanden.</p>
+                    {% endif %}
+
                     <a href="/terrarium/{{ terrarium[0] }}">Details ansehen</a>
                 </div>
             {% endfor %}

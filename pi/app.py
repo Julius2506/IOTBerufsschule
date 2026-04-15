@@ -4,24 +4,41 @@ from database import get_connection
 app = Flask(__name__)
 
 @app.route("/")
+@app.route("/")
 def index():
-    conn = get_connection()
-    cursor = conn.cursor()
+    with get_connection() as conn:
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT
-            terrariums.id,
-            terrariums.name,
-            terrariums.description,
-            terrariums.arduino_id,
-            presets.name
-        FROM terrariums
-        LEFT JOIN presets ON terrariums.preset_id = presets.id
-        ORDER BY terrariums.id ASC
-    """)
+        cursor.execute("""
+            SELECT
+                terrariums.id,
+                terrariums.name,
+                terrariums.description,
+                terrariums.arduino_id,
+                presets.name,
+                latest.temperature,
+                latest.humidity,
+                latest.light,
+                latest.timestamp
+            FROM terrariums
+            LEFT JOIN presets
+                ON terrariums.preset_id = presets.id
+            LEFT JOIN (
+                SELECT sr1.*
+                FROM sensor_readings sr1
+                INNER JOIN (
+                    SELECT terrarium_id, MAX(timestamp) AS max_timestamp
+                    FROM sensor_readings
+                    GROUP BY terrarium_id
+                ) sr2
+                ON sr1.terrarium_id = sr2.terrarium_id
+                AND sr1.timestamp = sr2.max_timestamp
+            ) AS latest
+                ON terrariums.id = latest.terrarium_id
+            ORDER BY terrariums.id ASC
+        """)
 
-    terrariums = cursor.fetchall()
-    conn.close()
+        terrariums = cursor.fetchall()
 
     return render_template("index.html", terrariums=terrariums)
 
