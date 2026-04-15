@@ -91,3 +91,13 @@ button {
 button:hover {
     opacity: 0.9;
 }
+
+td form {
+    display: inline;
+    margin-left: 10px;
+}
+
+td button {
+    padding: 6px 10px;
+    font-size: 13px;
+}

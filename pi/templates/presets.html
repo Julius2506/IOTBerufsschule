@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Presets</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="/">← Zurück zur Übersicht</a>
+
+    <h1>Preset-Verwaltung</h1>
+
+    <p>
+        <a href="/presets/add">+ Neues Preset anlegen</a>
+    </p>
+
+    {% if presets %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Temperatur</th>
+                    <th>Luftfeuchtigkeit</th>
+                    <th>Licht</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for preset in presets %}
+                    <tr>
+                        <td>{{ preset[1] }}</td>
+                        <td>{{ preset[2] }} bis {{ preset[3] }} °C</td>
+                        <td>{{ preset[4] }} bis {{ preset[5] }} %</td>
+                        <td>{{ preset[6] }} bis {{ preset[7] }}</td>
+                        <td>
+                            <a href="/presets/{{ preset[0] }}/edit">Bearbeiten</a>
+
+                            <form action="/presets/{{ preset[0] }}/delete" method="POST" style="display:inline;">
+                                <button type="submit" onclick="return confirm('Preset wirklich löschen?');">
+                                    Löschen
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Noch keine Presets vorhanden.</p>
+    {% endif %}
+</body>
+</html>

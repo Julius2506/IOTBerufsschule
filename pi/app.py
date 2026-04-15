@@ -3,7 +3,7 @@ from database import get_connection
 
 app = Flask(__name__)
 
-@app.route("/")
+
 @app.route("/")
 def index():
     with get_connection() as conn:
@@ -161,9 +161,106 @@ def add_preset():
                 light_max
             ))
 
-        return redirect(url_for("index"))
+        return redirect(url_for("list_presets"))
 
     return render_template("add_preset.html")
+
+
+@app.route("/presets")
+def list_presets():
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT
+                id,
+                name,
+                temperature_min,
+                temperature_max,
+                humidity_min,
+                humidity_max,
+                light_min,
+                light_max
+            FROM presets
+            ORDER BY name ASC
+        """)
+        presets = cursor.fetchall()
+
+    return render_template("presets.html", presets=presets)
+
+
+@app.route("/presets/<int:preset_id>/edit", methods=["GET", "POST"])
+def edit_preset(preset_id):
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        if request.method == "POST":
+            name = request.form["name"]
+            temperature_min = request.form["temperature_min"]
+            temperature_max = request.form["temperature_max"]
+            humidity_min = request.form["humidity_min"]
+            humidity_max = request.form["humidity_max"]
+            light_min = request.form["light_min"]
+            light_max = request.form["light_max"]
+
+            cursor.execute("""
+                UPDATE presets
+                SET
+                    name = ?,
+                    temperature_min = ?,
+                    temperature_max = ?,
+                    humidity_min = ?,
+                    humidity_max = ?,
+                    light_min = ?,
+                    light_max = ?
+                WHERE id = ?
+            """, (
+                name,
+                temperature_min,
+                temperature_max,
+                humidity_min,
+                humidity_max,
+                light_min,
+                light_max,
+                preset_id
+            ))
+
+            return redirect(url_for("list_presets"))
+
+        cursor.execute("""
+            SELECT
+                id,
+                name,
+                temperature_min,
+                temperature_max,
+                humidity_min,
+                humidity_max,
+                light_min,
+                light_max
+            FROM presets
+            WHERE id = ?
+        """, (preset_id,))
+        preset = cursor.fetchone()
+
+    return render_template("edit_preset.html", preset=preset)
+
+
+@app.route("/presets/<int:preset_id>/delete", methods=["POST"])
+def delete_preset(preset_id):
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            UPDATE terrariums
+            SET preset_id = NULL
+            WHERE preset_id = ?
+        """, (preset_id,))
+
+        cursor.execute("""
+            DELETE FROM presets
+            WHERE id = ?
+        """, (preset_id,))
+
+    return redirect(url_for("list_presets"))
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)
