@@ -42,6 +42,7 @@ def index():
 
     return render_template("index.html", terrariums=terrariums)
 
+
 @app.route("/terrarium/<int:terrarium_id>")
 def terrarium_detail(terrarium_id):
     conn = get_connection()
@@ -87,6 +88,7 @@ def terrarium_detail(terrarium_id):
         readings=readings
     )
 
+
 @app.route("/terrariums/add", methods=["GET", "POST"])
 def add_terrarium():
     if request.method == "POST":
@@ -123,6 +125,45 @@ def add_terrarium():
 
     conn.close()
     return render_template("add_terrarium.html", presets=presets)
+
+
+@app.route("/presets/add", methods=["GET", "POST"])
+def add_preset():
+    if request.method == "POST":
+        name = request.form["name"]
+        temperature_min = request.form["temperature_min"]
+        temperature_max = request.form["temperature_max"]
+        humidity_min = request.form["humidity_min"]
+        humidity_max = request.form["humidity_max"]
+        light_min = request.form["light_min"]
+        light_max = request.form["light_max"]
+
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO presets (
+                    name,
+                    temperature_min,
+                    temperature_max,
+                    humidity_min,
+                    humidity_max,
+                    light_min,
+                    light_max
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (
+                name,
+                temperature_min,
+                temperature_max,
+                humidity_min,
+                humidity_max,
+                light_min,
+                light_max
+            ))
+
+        return redirect(url_for("index"))
+
+    return render_template("add_preset.html")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)

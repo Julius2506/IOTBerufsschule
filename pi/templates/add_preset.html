@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Preset hinzufügen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="/">← Zurück zur Übersicht</a>
+
+    <h1>Neues Preset anlegen</h1>
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">Preset-Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="temperature_min">Temperatur Minimum</label>
+            <input type="number" step="0.1" id="temperature_min" name="temperature_min" required>
+        </div>
+
+        <div class="form-group">
+            <label for="temperature_max">Temperatur Maximum</label>
+            <input type="number" step="0.1" id="temperature_max" name="temperature_max" required>
+        </div>
+
+        <div class="form-group">
+            <label for="humidity_min">Luftfeuchtigkeit Minimum</label>
+            <input type="number" step="0.1" id="humidity_min" name="humidity_min" required>
+        </div>
+
+        <div class="form-group">
+            <label for="humidity_max">Luftfeuchtigkeit Maximum</label>
+            <input type="number" step="0.1" id="humidity_max" name="humidity_max" required>
+        </div>
+
+        <div class="form-group">
+            <label for="light_min">Licht Minimum</label>
+            <input type="number" id="light_min" name="light_min" required>
+        </div>
+
+        <div class="form-group">
+            <label for="light_max">Licht Maximum</label>
+            <input type="number" id="light_max" name="light_max" required>
+        </div>
+
+        <button type="submit">Preset speichern</button>
+    </form>
+</body>
+</html>
