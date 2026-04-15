@@ -92,12 +92,38 @@ button:hover {
     opacity: 0.9;
 }
 
-td form {
-    display: inline;
-    margin-left: 10px;
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-td button {
-    padding: 6px 10px;
+.action-buttons form {
+    margin: 0;
+}
+
+.edit-link {
+    color: #1d6fa5;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.edit-link:hover {
+    text-decoration: underline;
+}
+
+.delete-button {
+    background-color: #c94b4b;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
     font-size: 13px;
+    width: auto;
+}
+
+.delete-button:hover {
+    opacity: 0.9;
 }

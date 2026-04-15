@@ -33,13 +33,15 @@
                         <td>{{ preset[4] }} bis {{ preset[5] }} %</td>
                         <td>{{ preset[6] }} bis {{ preset[7] }}</td>
                         <td>
-                            <a href="/presets/{{ preset[0] }}/edit">Bearbeiten</a>
+                            <div class="action-buttons">
+                                <a class="edit-link" href="/presets/{{ preset[0] }}/edit">Bearbeiten</a>
 
-                            <form action="/presets/{{ preset[0] }}/delete" method="POST" style="display:inline;">
-                                <button type="submit" onclick="return confirm('Preset wirklich löschen?');">
-                                    Löschen
-                                </button>
-                            </form>
+                                <form action="/presets/{{ preset[0] }}/delete" method="POST">
+                                    <button class="delete-button" type="submit" onclick="return confirm('Preset wirklich löschen?');">
+                                        Löschen
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 {% endfor %}
