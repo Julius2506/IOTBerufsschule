@@ -72,9 +72,6 @@ def terrarium_detail(terrarium_id):
 
 @app.route("/terrariums/add", methods=["GET", "POST"])
 def add_terrarium():
-    conn = get_connection()
-    cursor = conn.cursor()
-
     if request.method == "POST":
         name = request.form["name"]
         description = request.form["description"]
@@ -83,6 +80,9 @@ def add_terrarium():
 
         if preset_id == "":
             preset_id = None
+
+        conn = get_connection()
+        cursor = conn.cursor()
 
         cursor.execute("""
             INSERT INTO terrariums (name, description, arduino_id, preset_id)
@@ -93,6 +93,9 @@ def add_terrarium():
         conn.close()
 
         return redirect(url_for("index"))
+
+    conn = get_connection()
+    cursor = conn.cursor()
 
     cursor.execute("""
         SELECT id, name
@@ -105,4 +108,4 @@ def add_terrarium():
     return render_template("add_terrarium.html", presets=presets)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
