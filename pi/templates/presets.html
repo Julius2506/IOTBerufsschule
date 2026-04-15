@@ -37,7 +37,11 @@
                                 <a class="edit-link" href="/presets/{{ preset[0] }}/edit">Bearbeiten</a>
 
                                 <form action="/presets/{{ preset[0] }}/delete" method="POST">
-                                    <button class="delete-button" type="submit" onclick="return confirm('Preset wirklich löschen?');">
+                                    <button
+                                        class="delete-button"
+                                        type="submit"
+                                        onclick="return confirm('Preset wirklich löschen?');"
+                                    >
                                         Löschen
                                     </button>
                                 </form>
