@@ -100,31 +100,121 @@ def add_terrarium():
         if preset_id == "":
             preset_id = None
 
-        conn = get_connection()
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO terrariums (name, description, arduino_id, preset_id)
+                VALUES (?, ?, ?, ?)
+            """, (name, description, arduino_id, preset_id))
+
+        return redirect(url_for("list_terrariums"))
+
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT id, name
+            FROM presets
+            ORDER BY name ASC
+        """)
+        presets = cursor.fetchall()
+
+    return render_template("add_terrarium.html", presets=presets)
+
+
+@app.route("/terrariums")
+def list_terrariums():
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT
+                terrariums.id,
+                terrariums.name,
+                terrariums.description,
+                terrariums.arduino_id,
+                presets.name
+            FROM terrariums
+            LEFT JOIN presets ON terrariums.preset_id = presets.id
+            ORDER BY terrariums.name ASC
+        """)
+        terrariums = cursor.fetchall()
+
+    return render_template("terrariums.html", terrariums=terrariums)
+
+
+@app.route("/terrariums/<int:terrarium_id>/edit", methods=["GET", "POST"])
+def edit_terrarium(terrarium_id):
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        if request.method == "POST":
+            name = request.form["name"]
+            description = request.form["description"]
+            arduino_id = request.form["arduino_id"]
+            preset_id = request.form["preset_id"]
+
+            if preset_id == "":
+                preset_id = None
+
+            cursor.execute("""
+                UPDATE terrariums
+                SET
+                    name = ?,
+                    description = ?,
+                    arduino_id = ?,
+                    preset_id = ?
+                WHERE id = ?
+            """, (
+                name,
+                description,
+                arduino_id,
+                preset_id,
+                terrarium_id
+            ))
+
+            return redirect(url_for("list_terrariums"))
+
+        cursor.execute("""
+            SELECT
+                id,
+                name,
+                description,
+                arduino_id,
+                preset_id
+            FROM terrariums
+            WHERE id = ?
+        """, (terrarium_id,))
+        terrarium = cursor.fetchone()
+
+        cursor.execute("""
+            SELECT id, name
+            FROM presets
+            ORDER BY name ASC
+        """)
+        presets = cursor.fetchall()
+
+    return render_template(
+        "edit_terrarium.html",
+        terrarium=terrarium,
+        presets=presets
+    )
+
+
+@app.route("/terrariums/<int:terrarium_id>/delete", methods=["POST"])
+def delete_terrarium(terrarium_id):
+    with get_connection() as conn:
         cursor = conn.cursor()
 
         cursor.execute("""
-            INSERT INTO terrariums (name, description, arduino_id, preset_id)
-            VALUES (?, ?, ?, ?)
-        """, (name, description, arduino_id, preset_id))
+            DELETE FROM sensor_readings
+            WHERE terrarium_id = ?
+        """, (terrarium_id,))
 
-        conn.commit()
-        conn.close()
+        cursor.execute("""
+            DELETE FROM terrariums
+            WHERE id = ?
+        """, (terrarium_id,))
 
-        return redirect(url_for("index"))
-
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT id, name
-        FROM presets
-        ORDER BY name ASC
-    """)
-    presets = cursor.fetchall()
-
-    conn.close()
-    return render_template("add_terrarium.html", presets=presets)
+    return redirect(url_for("list_terrariums"))
 
 
 @app.route("/presets/add", methods=["GET", "POST"])

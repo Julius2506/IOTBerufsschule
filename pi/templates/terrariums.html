@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Terrarien</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="/">← Zurück zur Übersicht</a>
+
+    <h1>Terrarium-Verwaltung</h1>
+
+    <p>
+        <a href="/terrariums/add">+ Neues Terrarium anlegen</a>
+    </p>
+
+    {% if terrariums %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Beschreibung</th>
+                    <th>Arduino-ID</th>
+                    <th>Preset</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for terrarium in terrariums %}
+                    <tr>
+                        <td>{{ terrarium[1] }}</td>
+                        <td>{{ terrarium[2] or "Keine Beschreibung" }}</td>
+                        <td>{{ terrarium[3] }}</td>
+                        <td>{{ terrarium[4] or "Kein Preset" }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a class="edit-link" href="/terrariums/{{ terrarium[0] }}/edit">Bearbeiten</a>
+
+                                <form action="/terrariums/{{ terrarium[0] }}/delete" method="POST">
+                                    <button
+                                        class="delete-button"
+                                        type="submit"
+                                        onclick="return confirm('Terrarium wirklich löschen? Alle zugehörigen Messwerte werden ebenfalls gelöscht.');"
+                                    >
+                                        Löschen
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Noch keine Terrarien vorhanden.</p>
+    {% endif %}
+</body>
+</html>
