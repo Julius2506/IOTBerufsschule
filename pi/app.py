@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from database import get_connection
 
 app = Flask(__name__)
@@ -69,6 +69,40 @@ def terrarium_detail(terrarium_id):
         terrarium=terrarium,
         readings=readings
     )
+
+@app.route("/terrariums/add", methods=["GET", "POST"])
+def add_terrarium():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        name = request.form["name"]
+        description = request.form["description"]
+        arduino_id = request.form["arduino_id"]
+        preset_id = request.form["preset_id"]
+
+        if preset_id == "":
+            preset_id = None
+
+        cursor.execute("""
+            INSERT INTO terrariums (name, description, arduino_id, preset_id)
+            VALUES (?, ?, ?, ?)
+        """, (name, description, arduino_id, preset_id))
+
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for("index"))
+
+    cursor.execute("""
+        SELECT id, name
+        FROM presets
+        ORDER BY name ASC
+    """)
+    presets = cursor.fetchall()
+
+    conn.close()
+    return render_template("add_terrarium.html", presets=presets)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

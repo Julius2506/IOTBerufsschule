@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Terrarium hinzufügen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="/">← Zurück zur Übersicht</a>
+
+    <h1>Neues Terrarium anlegen</h1>
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="name">Name des Terrariums</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Beschreibung</label>
+            <textarea id="description" name="description" rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="arduino_id">Arduino-ID</label>
+            <input type="text" id="arduino_id" name="arduino_id" required>
+        </div>
+
+        <div class="form-group">
+            <label for="preset_id">Preset auswählen</label>
+            <select id="preset_id" name="preset_id">
+                <option value="">Kein Preset</option>
+                {% for preset in presets %}
+                    <option value="{{ preset[0] }}">{{ preset[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit">Terrarium speichern</button>
+    </form>
+</body>
+</html>
