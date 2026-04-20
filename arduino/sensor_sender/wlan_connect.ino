@@ -10,6 +10,8 @@ const int mqtt_port = 1883;
 WiFiClient espClient;
 PubSubClient client(espClient);
 
+unsigned long lastPublish = 0;
+
 void connectToWiFi() {
   Serial.println("Verbinde mit WLAN...");
   WiFi.begin(ssid, password);
@@ -61,4 +63,23 @@ void loop() {
   }
 
   client.loop();
+
+  unsigned long now = millis();
+  if (now - lastPublish > 5000) {
+    lastPublish = now;
+
+    const char* topic = "terrarium/terra1/sensor";
+    const char* payload = "{\"arduino_id\":\"terra1\",\"temperature\":24.5,\"humidity\":60.2,\"light\":320}";
+
+    bool ok = client.publish(topic, payload);
+
+    Serial.println("Sende MQTT-Testnachricht...");
+    Serial.print("Topic: ");
+    Serial.println(topic);
+    Serial.print("Payload: ");
+    Serial.println(payload);
+    Serial.print("Erfolgreich: ");
+    Serial.println(ok ? "ja" : "nein");
+    Serial.println("--------------------");
+  }
 }
