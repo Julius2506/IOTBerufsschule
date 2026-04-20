@@ -1,13 +1,17 @@
 #include <WiFi.h>
+#include <PubSubClient.h>
 
 const char* ssid = "FES-SuS";
 const char* password = "SuS-WLAN!Key24";
 
-void setup() {
-  Serial.begin(115200);
-  delay(1000);
+const char* mqtt_server = "10.93.133.204";
+const int mqtt_port = 1883;
 
-  Serial.println("Starte WLAN-Verbindung...");
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+void connectToWiFi() {
+  Serial.println("Verbinde mit WLAN...");
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED) {
@@ -21,5 +25,40 @@ void setup() {
   Serial.println(WiFi.localIP());
 }
 
+void connectToMQTT() {
+  while (!client.connected()) {
+    Serial.print("Verbinde mit MQTT... ");
+
+    String clientId = "ESP32Client-";
+    clientId += String(random(0xffff), HEX);
+
+    if (client.connect(clientId.c_str())) {
+      Serial.println("verbunden");
+    } else {
+      Serial.print("fehlgeschlagen, rc=");
+      Serial.print(client.state());
+      Serial.println(" -> neuer Versuch in 2 Sekunden");
+      delay(2000);
+    }
+  }
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  connectToWiFi();
+  client.setServer(mqtt_server, mqtt_port);
+}
+
 void loop() {
+  if (WiFi.status() != WL_CONNECTED) {
+    connectToWiFi();
+  }
+
+  if (!client.connected()) {
+    connectToMQTT();
+  }
+
+  client.loop();
 }
