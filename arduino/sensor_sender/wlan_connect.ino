@@ -1,6 +1,6 @@
 #include <WiFi.h>
 
-const char* ssid = "FES-SUS";
+const char* ssid = "FES-SuS";
 const char* password = "SuS-WLAN!Key24";
 
 void setup() {
