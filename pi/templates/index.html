@@ -41,5 +41,19 @@
     {% else %}
         <p>Es sind noch keine Terrarien vorhanden.</p>
     {% endif %}
+    <script>
+        async function fetchTerrariumData() {
+            try {
+                const response = await fetch("/api/terrariums");
+                const data = await response.json();
+                console.log("Aktuelle Terrarium-Daten:", data);
+            } catch (error) {
+                console.error("Fehler beim Laden der Terrarium-Daten:", error);
+            }
+        }
+
+        fetchTerrariumData();
+        setInterval(fetchTerrariumData, 5000);
+    </script>
 </body>
 </html>
