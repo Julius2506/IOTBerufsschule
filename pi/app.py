@@ -364,6 +364,8 @@ def api_terrariums():
                 terrariums.description,
                 terrariums.arduino_id,
                 presets.name,
+                presets.light_min,
+                presets.light_max,
                 latest.temperature,
                 latest.humidity,
                 latest.light,
@@ -396,10 +398,12 @@ def api_terrariums():
             "description": row[2],
             "arduino_id": row[3],
             "preset_name": row[4],
-            "temperature": row[5],
-            "humidity": row[6],
-            "light": row[7],
-            "timestamp": row[8]
+            "light_min": row[5],
+            "light_max": row[6],
+            "temperature": row[7],
+            "humidity": row[8],
+            "light": row[9],
+            "timestamp": row[10]
         })
 
     return jsonify(terrariums)
