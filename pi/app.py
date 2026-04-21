@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from database import get_connection
 
 app = Flask(__name__)
@@ -351,6 +351,58 @@ def delete_preset(preset_id):
         """, (preset_id,))
 
     return redirect(url_for("list_presets"))
+
+@app.route("/api/terrariums")
+def api_terrariums():
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT
+                terrariums.id,
+                terrariums.name,
+                terrariums.description,
+                terrariums.arduino_id,
+                presets.name,
+                latest.temperature,
+                latest.humidity,
+                latest.light,
+                latest.timestamp
+            FROM terrariums
+            LEFT JOIN presets
+                ON terrariums.preset_id = presets.id
+            LEFT JOIN (
+                SELECT sr1.*
+                FROM sensor_readings sr1
+                INNER JOIN (
+                    SELECT terrarium_id, MAX(timestamp) AS max_timestamp
+                    FROM sensor_readings
+                    GROUP BY terrarium_id
+                ) sr2
+                ON sr1.terrarium_id = sr2.terrarium_id
+                AND sr1.timestamp = sr2.max_timestamp
+            ) AS latest
+                ON terrariums.id = latest.terrarium_id
+            ORDER BY terrariums.id ASC
+        """)
+
+        rows = cursor.fetchall()
+
+    terrariums = []
+    for row in rows:
+        terrariums.append({
+            "id": row[0],
+            "name": row[1],
+            "description": row[2],
+            "arduino_id": row[3],
+            "preset_name": row[4],
+            "temperature": row[5],
+            "humidity": row[6],
+            "light": row[7],
+            "timestamp": row[8]
+        })
+
+    return jsonify(terrariums)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)
