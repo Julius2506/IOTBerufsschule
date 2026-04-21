@@ -132,3 +132,39 @@ button:hover {
 .delete-button:hover {
     opacity: 0.9;
 }
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1f4e5f;
+    padding: 16px 32px;
+    margin: -40px -40px 30px -40px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.navbar-brand a {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 15px;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+
+.navbar-links a:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    text-decoration: none;
+}
