@@ -308,3 +308,13 @@ button:hover {
     background-color: #e3efdd;
     text-decoration: none;
 }
+
+.status-ok {
+    background-color: #edf8ea;
+    border-color: #b7d7b0;
+}
+
+.status-warning {
+    background-color: #fff4e8;
+    border-color: #e7b980;
+}

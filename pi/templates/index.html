@@ -54,7 +54,7 @@
                                     <div class="sensor-value"><span id="humidity-{{ terrarium[0] }}">{{ terrarium[6] }}</span> <span class="sensor-unit">%</span></div>
                                 </div>
 
-                                <div class="sensor-box">
+                                <div class="sensor-box" id="light-box-{{ terrarium[0] }}">
                                     <div class="sensor-label">Helligkeit</div>
                                     <div class="sensor-value"><span id="light-{{ terrarium[0] }}">{{ terrarium[7] }}</span> <span class="sensor-unit">lx</span></div>
                                 </div>
@@ -78,9 +78,9 @@
                                     <div class="sensor-value"><span id="humidity-{{ terrarium[0] }}">-</span> <span class="sensor-unit">%</span></div>
                                 </div>
 
-                                <div class="sensor-box">
-                                    <div class="sensor-label">Licht</div>
-                                    <div class="sensor-value"><span id="light-{{ terrarium[0] }}">-</span></div>
+                                <div class="sensor-box" id="light-box-{{ terrarium[0] }}">
+                                    <div class="sensor-label">Helligkeit</div>
+                                    <div class="sensor-value"><span id="light-{{ terrarium[0] }}">-</span> <span class="sensor-unit">lx</span></div>
                                 </div>
 
                                 <div class="sensor-box">
@@ -110,6 +110,7 @@
                 const lightEl = document.getElementById(`light-${terrarium.id}`);
                 const timestampEl = document.getElementById(`timestamp-${terrarium.id}`);
                 const noDataEl = document.getElementById(`no-data-${terrarium.id}`);
+                const lightBoxEl = document.getElementById(`light-box-${terrarium.id}`);
 
                 if (tempEl) {
                     tempEl.textContent = terrarium.temperature ?? "-";
@@ -129,6 +130,25 @@
 
                 if (noDataEl && terrarium.temperature !== null) {
                     noDataEl.style.display = "none";
+                }
+
+                if (lightBoxEl) {
+                    lightBoxEl.classList.remove("status-ok", "status-warning");
+
+                    if (
+                        terrarium.light !== null &&
+                        terrarium.light_min !== null &&
+                        terrarium.light_max !== null
+                    ) {
+                        if (
+                            terrarium.light >= terrarium.light_min &&
+                            terrarium.light <= terrarium.light_max
+                        ) {
+                            lightBoxEl.classList.add("status-ok");
+                        } else {
+                            lightBoxEl.classList.add("status-warning");
+                        }
+                    }
                 }
             });
         } catch (error) {
