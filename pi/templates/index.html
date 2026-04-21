@@ -20,10 +20,17 @@
         <div class="card-container">
             {% for terrarium in terrariums %}
                 <div class="card">
-                    <h2>{{ terrarium[1] }}</h2>
-                    <p><strong>Beschreibung:</strong> {{ terrarium[2] or "Keine Beschreibung" }}</p>
-                    <p><strong>Arduino-ID:</strong> {{ terrarium[3] }}</p>
-                    <p><strong>Preset:</strong> {{ terrarium[4] or "Kein Preset" }}</p>
+                    <div class="card-header">
+                        <div>
+                            <h2>{{ terrarium[1] }}</h2>
+                            <p class="card-description">{{ terrarium[2] or "Keine Beschreibung" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="badge-row">
+                        <span class="info-badge">Arduino: {{ terrarium[3] }}</span>
+                        <span class="info-badge">{{ terrarium[4] or "Kein Preset" }}</span>
+                    </div>
 
                     <div class="sensor-section">
                         <h3>Aktuelle Werte</h3>

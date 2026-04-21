@@ -216,3 +216,31 @@ button:hover {
     color: #34444c;
     font-weight: 500;
 }
+
+.card-header {
+    margin-bottom: 12px;
+}
+
+.card-description {
+    color: #5b6b73;
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
+.badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.info-badge {
+    display: inline-block;
+    background-color: #e8f1f4;
+    color: #1f4e5f;
+    border: 1px solid #c8d9e0;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+}
