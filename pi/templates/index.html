@@ -7,7 +7,7 @@
 </head>
 <body>
     {% include "navbar.html" %}
-    
+
     <h1>Terrarium Übersicht</h1>
 
     <p>
@@ -25,20 +25,57 @@
                     <p><strong>Arduino-ID:</strong> {{ terrarium[3] }}</p>
                     <p><strong>Preset:</strong> {{ terrarium[4] or "Kein Preset" }}</p>
 
-                    <h3>Aktuelle Werte</h3>
+                    <div class="sensor-section">
+                        <h3>Aktuelle Werte</h3>
 
-                    {% if terrarium[5] is not none %}
-                        <p><strong>Temperatur:</strong> <span id="temp-{{ terrarium[0] }}">{{ terrarium[5] }}</span> °C</p>
-                        <p><strong>Luftfeuchtigkeit:</strong> <span id="humidity-{{ terrarium[0] }}">{{ terrarium[6] }}</span> %</p>
-                        <p><strong>Licht:</strong> <span id="light-{{ terrarium[0] }}">{{ terrarium[7] }}</span></p>
-                        <p><strong>Letzte Messung:</strong> <span id="timestamp-{{ terrarium[0] }}">{{ terrarium[8] }}</span></p>
-                    {% else %}
-                        <p id="no-data-{{ terrarium[0] }}">Noch keine Messwerte vorhanden.</p>
-                        <p><strong>Temperatur:</strong> <span id="temp-{{ terrarium[0] }}">-</span> °C</p>
-                        <p><strong>Luftfeuchtigkeit:</strong> <span id="humidity-{{ terrarium[0] }}">-</span> %</p>
-                        <p><strong>Licht:</strong> <span id="light-{{ terrarium[0] }}">-</span></p>
-                        <p><strong>Letzte Messung:</strong> <span id="timestamp-{{ terrarium[0] }}">-</span></p>
-                    {% endif %}
+                        {% if terrarium[5] is not none %}
+                            <div class="sensor-grid">
+                                <div class="sensor-box">
+                                    <div class="sensor-label">Temperatur</div>
+                                    <div class="sensor-value"><span id="temp-{{ terrarium[0] }}">{{ terrarium[5] }}</span> <span class="sensor-unit">°C</span></div>
+                                </div>
+
+                                <div class="sensor-box">
+                                    <div class="sensor-label">Luftfeuchtigkeit</div>
+                                    <div class="sensor-value"><span id="humidity-{{ terrarium[0] }}">{{ terrarium[6] }}</span> <span class="sensor-unit">%</span></div>
+                                </div>
+
+                                <div class="sensor-box">
+                                    <div class="sensor-label">Licht</div>
+                                    <div class="sensor-value"><span id="light-{{ terrarium[0] }}">{{ terrarium[7] }}</span></div>
+                                </div>
+
+                                <div class="sensor-box">
+                                    <div class="sensor-label">Letzte Messung</div>
+                                    <div class="sensor-timestamp" id="timestamp-{{ terrarium[0] }}">{{ terrarium[8] }}</div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <p id="no-data-{{ terrarium[0] }}">Noch keine Messwerte vorhanden.</p>
+
+                            <div class="sensor-grid">
+                                <div class="sensor-box">
+                                    <div class="sensor-label">Temperatur</div>
+                                    <div class="sensor-value"><span id="temp-{{ terrarium[0] }}">-</span> <span class="sensor-unit">°C</span></div>
+                                </div>
+
+                                <div class="sensor-box">
+                                    <div class="sensor-label">Luftfeuchtigkeit</div>
+                                    <div class="sensor-value"><span id="humidity-{{ terrarium[0] }}">-</span> <span class="sensor-unit">%</span></div>
+                                </div>
+
+                                <div class="sensor-box">
+                                    <div class="sensor-label">Licht</div>
+                                    <div class="sensor-value"><span id="light-{{ terrarium[0] }}">-</span></div>
+                                </div>
+
+                                <div class="sensor-box">
+                                    <div class="sensor-label">Letzte Messung</div>
+                                    <div class="sensor-timestamp" id="timestamp-{{ terrarium[0] }}">-</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
 
                     <a href="/terrarium/{{ terrarium[0] }}">Details ansehen</a>
                 </div>

@@ -172,3 +172,47 @@ button:hover {
     background-color: rgba(255, 255, 255, 0.12);
     text-decoration: none;
 }
+
+.sensor-section {
+    margin-top: 18px;
+}
+
+.sensor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.sensor-box {
+    background-color: #f7fafb;
+    border: 1px solid #d9e3e8;
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.sensor-label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #5b6b73;
+    margin-bottom: 8px;
+}
+
+.sensor-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #1f4e5f;
+    line-height: 1.1;
+}
+
+.sensor-unit {
+    font-size: 16px;
+    font-weight: 600;
+    color: #5b6b73;
+}
+
+.sensor-timestamp {
+    font-size: 14px;
+    color: #34444c;
+    font-weight: 500;
+}
