@@ -26,12 +26,16 @@
                     <h3>Aktuelle Werte</h3>
 
                     {% if terrarium[5] is not none %}
-                        <p><strong>Temperatur:</strong> {{ terrarium[5] }} °C</p>
-                        <p><strong>Luftfeuchtigkeit:</strong> {{ terrarium[6] }} %</p>
-                        <p><strong>Licht:</strong> {{ terrarium[7] }}</p>
-                        <p><strong>Letzte Messung:</strong> {{ terrarium[8] }}</p>
+                        <p><strong>Temperatur:</strong> <span id="temp-{{ terrarium[0] }}">{{ terrarium[5] }}</span> °C</p>
+                        <p><strong>Luftfeuchtigkeit:</strong> <span id="humidity-{{ terrarium[0] }}">{{ terrarium[6] }}</span> %</p>
+                        <p><strong>Licht:</strong> <span id="light-{{ terrarium[0] }}">{{ terrarium[7] }}</span></p>
+                        <p><strong>Letzte Messung:</strong> <span id="timestamp-{{ terrarium[0] }}">{{ terrarium[8] }}</span></p>
                     {% else %}
-                        <p>Noch keine Messwerte vorhanden.</p>
+                        <p id="no-data-{{ terrarium[0] }}">Noch keine Messwerte vorhanden.</p>
+                        <p><strong>Temperatur:</strong> <span id="temp-{{ terrarium[0] }}">-</span> °C</p>
+                        <p><strong>Luftfeuchtigkeit:</strong> <span id="humidity-{{ terrarium[0] }}">-</span> %</p>
+                        <p><strong>Licht:</strong> <span id="light-{{ terrarium[0] }}">-</span></p>
+                        <p><strong>Letzte Messung:</strong> <span id="timestamp-{{ terrarium[0] }}">-</span></p>
                     {% endif %}
 
                     <a href="/terrarium/{{ terrarium[0] }}">Details ansehen</a>
@@ -42,18 +46,45 @@
         <p>Es sind noch keine Terrarien vorhanden.</p>
     {% endif %}
     <script>
-        async function fetchTerrariumData() {
-            try {
-                const response = await fetch("/api/terrariums");
-                const data = await response.json();
-                console.log("Aktuelle Terrarium-Daten:", data);
-            } catch (error) {
-                console.error("Fehler beim Laden der Terrarium-Daten:", error);
-            }
-        }
+    async function fetchTerrariumData() {
+        try {
+            const response = await fetch("/api/terrariums");
+            const data = await response.json();
 
-        fetchTerrariumData();
-        setInterval(fetchTerrariumData, 5000);
+            data.forEach(terrarium => {
+                const tempEl = document.getElementById(`temp-${terrarium.id}`);
+                const humidityEl = document.getElementById(`humidity-${terrarium.id}`);
+                const lightEl = document.getElementById(`light-${terrarium.id}`);
+                const timestampEl = document.getElementById(`timestamp-${terrarium.id}`);
+                const noDataEl = document.getElementById(`no-data-${terrarium.id}`);
+
+                if (tempEl) {
+                    tempEl.textContent = terrarium.temperature ?? "-";
+                }
+
+                if (humidityEl) {
+                    humidityEl.textContent = terrarium.humidity ?? "-";
+                }
+
+                if (lightEl) {
+                    lightEl.textContent = terrarium.light ?? "-";
+                }
+
+                if (timestampEl) {
+                    timestampEl.textContent = terrarium.timestamp ?? "-";
+                }
+
+                if (noDataEl && terrarium.temperature !== null) {
+                    noDataEl.style.display = "none";
+                }
+            });
+        } catch (error) {
+            console.error("Fehler beim Laden der Terrarium-Daten:", error);
+        }
+    }
+
+    fetchTerrariumData();
+    setInterval(fetchTerrariumData, 5000);
     </script>
 </body>
 </html>
