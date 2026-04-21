@@ -1,12 +1,12 @@
 body {
     font-family: Arial, sans-serif;
     margin: 40px;
-    background-color: #f4f6f8;
-    color: #222;
+    background-color: #eef4ee;
+    color: #243127;
 }
 
 h1, h2, h3 {
-    color: #1f4e5f;
+    color: #2f5d3a;
 }
 
 .card-container {
@@ -18,7 +18,7 @@ h1, h2, h3 {
 
 .card {
     background: white;
-    border: 1px solid #d9e3e8;
+    border: 1px solid #d7e3d4;
     border-radius: 16px;
     padding: 24px;
     min-height: 280px;
@@ -141,7 +141,7 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #1f4e5f;
+    background: linear-gradient(90deg, #2f5d3a 0%, #3f7a4b 100%);
     padding: 16px 32px;
     margin: -40px -40px 30px -40px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
@@ -185,8 +185,8 @@ button:hover {
 }
 
 .sensor-box {
-    background-color: #f7fafb;
-    border: 1px solid #d9e3e8;
+    background-color: #f6faf4;
+    border: 1px solid #d8e6d4;
     border-radius: 12px;
     padding: 14px;
 }
@@ -201,7 +201,7 @@ button:hover {
 .sensor-value {
     font-size: 28px;
     font-weight: bold;
-    color: #1f4e5f;
+    color: #2f5d3a;
     line-height: 1.1;
 }
 
@@ -236,9 +236,9 @@ button:hover {
 
 .info-badge {
     display: inline-block;
-    background-color: #e8f1f4;
-    color: #1f4e5f;
-    border: 1px solid #c8d9e0;
+    background-color: #e5f1e3;
+    color: #2f5d3a;
+    border: 1px solid #c8ddc2;
     border-radius: 999px;
     padding: 6px 12px;
     font-size: 13px;
