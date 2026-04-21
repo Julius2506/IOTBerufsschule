@@ -244,3 +244,67 @@ button:hover {
     font-size: 13px;
     font-weight: 600;
 }
+
+.hero {
+    background: linear-gradient(135deg, #dbead8 0%, #edf5e8 55%, #f7fbf4 100%);
+    border: 1px solid #d4e3cf;
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 10px 24px rgba(48, 78, 52, 0.08);
+}
+
+.hero-eyebrow {
+    color: #4f7a57;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 8px;
+}
+
+.hero-text {
+    max-width: 700px;
+    color: #425345;
+    font-size: 17px;
+    line-height: 1.6;
+    margin-top: 10px;
+    margin-bottom: 22px;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.hero-button {
+    display: inline-block;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.hero-button.primary {
+    background-color: #2f5d3a;
+    color: white;
+}
+
+.hero-button.primary:hover {
+    background-color: #264c2f;
+    text-decoration: none;
+}
+
+.hero-button.secondary {
+    background-color: #edf5e8;
+    color: #2f5d3a;
+    border: 1px solid #cfe0c9;
+}
+
+.hero-button.secondary:hover {
+    background-color: #e3efdd;
+    text-decoration: none;
+}

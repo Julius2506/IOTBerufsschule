@@ -8,13 +8,20 @@
 <body>
     {% include "navbar.html" %}
 
-    <h1>Terrarium Übersicht</h1>
+    <section class="hero">
+        <div class="hero-content">
+            <p class="hero-eyebrow">Smart Terrarium Dashboard</p>
+            <h1>Terrarium Übersicht</h1>
+            <p class="hero-text">
+                Behalte Temperatur, Luftfeuchtigkeit und Sensordaten deiner Terrarien in Echtzeit im Blick.
+            </p>
 
-    <p>
-        <a href="/terrariums">Terrarium-Verwaltung öffnen</a>
-        <br>
-        <a href="/presets">Preset-Verwaltung öffnen</a>
-    </p>
+            <div class="hero-actions">
+                <a class="hero-button primary" href="/terrariums">Terrarien verwalten</a>
+                <a class="hero-button secondary" href="/presets">Presets verwalten</a>
+            </div>
+        </div>
+    </section>
 
     {% if terrariums %}
         <div class="card-container">
