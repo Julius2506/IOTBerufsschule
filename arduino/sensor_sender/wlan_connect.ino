@@ -2,8 +2,8 @@
 #include <PubSubClient.h>
 #include <DHT.h>
 
-const char* ssid = "DEIN_WLAN_NAME";
-const char* password = "DEIN_WLAN_PASSWORT";
+const char* ssid = "FES-SuS";
+const char* password = "SuS-WLAN!Key24";
 
 const char* mqtt_server = "10.93.133.204";
 const int mqtt_port = 1883;
