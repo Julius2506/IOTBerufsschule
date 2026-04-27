@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Terrarien verwalten</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body class="jungle-body">
-    {% include "navbar.html" %}
+{% extends "base.html" %}
+
+{% block title %}Terrarium Dashboard{% endblock %}
+
+{% block content %}
 
     <main class="management-page">
         <a class="back-link" href="/">
@@ -96,5 +92,4 @@
             </section>
         {% endif %}
     </main>
-</body>
-</html>
+{% endblock %}

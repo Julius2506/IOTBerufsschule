@@ -1,54 +1,192 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Preset hinzufügen</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    {% include "navbar.html" %}
-    
-    <a href="/presets">← Zurück zur Preset-Verwaltung</a>
+{% extends "base.html" %}
 
-    <h1>Neues Preset anlegen</h1>
+{% block title %}Terrarium Dashboard{% endblock %}
 
-    <form method="POST">
-        <div class="form-group">
-            <label for="name">Preset-Name</label>
-            <input type="text" id="name" name="name" required>
-        </div>
+{% block content %}
 
-        <div class="form-group">
-            <label for="temperature_min">Temperatur Minimum</label>
-            <input type="number" step="0.1" id="temperature_min" name="temperature_min" required>
-        </div>
+    <main class="form-page">
+        <a class="back-link" href="/presets">
+            <span>←</span>
+            Zurück zur Preset-Verwaltung
+        </a>
 
-        <div class="form-group">
-            <label for="temperature_max">Temperatur Maximum</label>
-            <input type="number" step="0.1" id="temperature_max" name="temperature_max" required>
-        </div>
+        <section class="form-hero preset-form-hero">
+            <div>
+                <p class="hero-kicker">Neues Klima-Profil</p>
+                <h1>Preset anlegen</h1>
+                <p>
+                    Definiere ideale Zielbereiche für Temperatur, Luftfeuchtigkeit und Licht.
+                    So kannst du Terrarien später schnell mit passenden Habitat-Werten ausstatten.
+                </p>
+            </div>
 
-        <div class="form-group">
-            <label for="humidity_min">Luftfeuchtigkeit Minimum</label>
-            <input type="number" step="0.1" id="humidity_min" name="humidity_min" required>
-        </div>
+            <div class="form-hero-card">
+                <div class="form-hero-card-icon">🌦️</div>
 
-        <div class="form-group">
-            <label for="humidity_max">Luftfeuchtigkeit Maximum</label>
-            <input type="number" step="0.1" id="humidity_max" name="humidity_max" required>
-        </div>
+                <div>
+                    <span>Habitat Werte</span>
+                    <strong>Klima-Profil</strong>
+                    <p>Grenzwerte für Temperatur, Feuchte und Licht.</p>
+                </div>
+            </div>
+        </section>
 
-        <div class="form-group">
-            <label for="light_min">Licht Minimum</label>
-            <input type="number" id="light_min" name="light_min" required>
-        </div>
+        <section class="form-layout">
+            <form class="jungle-form" method="POST">
+                <div class="form-section-title">
+                    <p class="section-kicker">Preset-Daten</p>
+                    <h2>Habitat-Einstellungen</h2>
+                </div>
 
-        <div class="form-group">
-            <label for="light_max">Licht Maximum</label>
-            <input type="number" id="light_max" name="light_max" required>
-        </div>
+                <div class="jungle-form-group">
+                    <label for="name">Preset-Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="z. B. Regenwald, Wüste, Tropisches Feuchtterrarium..."
+                        required
+                    >
+                    <small>Dieser Name erscheint später bei der Terrarium-Auswahl.</small>
+                </div>
 
-        <button type="submit">Preset speichern</button>
-    </form>
-</body>
-</html>
+                <div class="range-section">
+                    <div class="range-section-heading">
+                        <div class="range-icon">🌡️</div>
+                        <div>
+                            <h3>Temperatur</h3>
+                            <p>Minimaler und maximaler Temperaturbereich in °C.</p>
+                        </div>
+                    </div>
+
+                    <div class="jungle-form-grid">
+                        <div class="jungle-form-group">
+                            <label for="temperature_min">Minimum</label>
+                            <input
+                                type="number"
+                                step="0.1"
+                                id="temperature_min"
+                                name="temperature_min"
+                                placeholder="20.0"
+                                required
+                            >
+                        </div>
+
+                        <div class="jungle-form-group">
+                            <label for="temperature_max">Maximum</label>
+                            <input
+                                type="number"
+                                step="0.1"
+                                id="temperature_max"
+                                name="temperature_max"
+                                placeholder="30.0"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="range-section">
+                    <div class="range-section-heading">
+                        <div class="range-icon">💧</div>
+                        <div>
+                            <h3>Luftfeuchtigkeit</h3>
+                            <p>Gewünschter Feuchtigkeitsbereich in Prozent.</p>
+                        </div>
+                    </div>
+
+                    <div class="jungle-form-grid">
+                        <div class="jungle-form-group">
+                            <label for="humidity_min">Minimum</label>
+                            <input
+                                type="number"
+                                step="0.1"
+                                id="humidity_min"
+                                name="humidity_min"
+                                placeholder="70.0"
+                                required
+                            >
+                        </div>
+
+                        <div class="jungle-form-group">
+                            <label for="humidity_max">Maximum</label>
+                            <input
+                                type="number"
+                                step="0.1"
+                                id="humidity_max"
+                                name="humidity_max"
+                                placeholder="90.0"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="range-section">
+                    <div class="range-section-heading">
+                        <div class="range-icon">☀️</div>
+                        <div>
+                            <h3>Licht</h3>
+                            <p>Minimaler und maximaler Lichtwert in lx.</p>
+                        </div>
+                    </div>
+
+                    <div class="jungle-form-grid">
+                        <div class="jungle-form-group">
+                            <label for="light_min">Minimum</label>
+                            <input
+                                type="number"
+                                id="light_min"
+                                name="light_min"
+                                placeholder="10"
+                                required
+                            >
+                        </div>
+
+                        <div class="jungle-form-group">
+                            <label for="light_max">Maximum</label>
+                            <input
+                                type="number"
+                                id="light_max"
+                                name="light_max"
+                                placeholder="800"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions-row">
+                    <a class="jungle-button secondary" href="/presets">Abbrechen</a>
+                    <button class="jungle-submit-button" type="submit">
+                        Preset speichern
+                    </button>
+                </div>
+            </form>
+
+            <aside class="form-help-card">
+                <p class="card-kicker">Tipp</p>
+                <h2>Gute Bereiche wählen</h2>
+                <p>
+                    Ein Preset beschreibt nicht einen einzelnen Messwert, sondern einen sicheren Bereich.
+                    Dadurch kann das System später erkennen, ob Werte im Zielbereich liegen oder abweichen.
+                </p>
+
+                <div class="help-list">
+                    <div>
+                        <span>01</span>
+                        <p>Habitat benennen</p>
+                    </div>
+                    <div>
+                        <span>02</span>
+                        <p>Minimum und Maximum setzen</p>
+                    </div>
+                    <div>
+                        <span>03</span>
+                        <p>Terrarien damit verknüpfen</p>
+                    </div>
+                </div>
+            </aside>
+        </section>
+    </main>
+{% endblock %}

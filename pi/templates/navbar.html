@@ -1,16 +1,32 @@
 <nav class="jungle-navbar">
-    <a class="jungle-brand" href="/">
-        <span class="brand-icon">🌿</span>
-
-        <span class="brand-text">
-            <strong>Terrarium Monitor</strong>
-            <small>Rainforest Control</small>
-        </span>
+    <a class="jungle-brand logo-brand" href="/">
+        <img
+            class="navbar-logo"
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="Terrarium Monitor Logo"
+        >
     </a>
 
     <div class="jungle-nav-links">
-        <a href="/" class="nav-item">Übersicht</a>
-        <a href="/terrariums" class="nav-item">Terrarien</a>
-        <a href="/presets" class="nav-item">Presets</a>
+        <a
+        href="/"
+        class="nav-item {% if request.endpoint == 'index' or request.endpoint == 'terrarium_detail' %}active{% endif %}"
+        >
+            Dashboard
+        </a>
+
+        <a
+            href="/terrariums"
+            class="nav-item {% if request.endpoint in ['list_terrariums', 'add_terrarium', 'edit_terrarium'] %}active{% endif %}"
+        >
+            Terrarien
+        </a>
+
+        <a
+            href="/presets"
+            class="nav-item {% if request.endpoint in ['list_presets', 'add_preset', 'edit_preset'] %}active{% endif %}"
+        >
+            Klima-Profile
+        </a>
     </div>
 </nav>

@@ -1,58 +1,203 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Preset bearbeiten</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    {% include "navbar.html" %}
-    
-    <a href="/presets">← Zurück zur Preset-Verwaltung</a>
+{% extends "base.html" %}
 
-    <h1>Preset bearbeiten</h1>
+{% block title %}Terrarium Dashboard{% endblock %}
 
-    {% if preset %}
-        <form method="POST">
-            <div class="form-group">
-                <label for="name">Preset-Name</label>
-                <input type="text" id="name" name="name" value="{{ preset[1] }}" required>
-            </div>
+{% block content %}
 
-            <div class="form-group">
-                <label for="temperature_min">Temperatur Minimum</label>
-                <input type="number" step="0.1" id="temperature_min" name="temperature_min" value="{{ preset[2] }}" required>
-            </div>
+    <main class="form-page">
+        <a class="back-link" href="/presets">
+            <span>←</span>
+            Zurück zur Preset-Verwaltung
+        </a>
 
-            <div class="form-group">
-                <label for="temperature_max">Temperatur Maximum</label>
-                <input type="number" step="0.1" id="temperature_max" name="temperature_max" value="{{ preset[3] }}" required>
-            </div>
+        {% if preset %}
+            <section class="form-hero preset-form-hero">
+                <div>
+                    <p class="hero-kicker">Klima-Profil bearbeiten</p>
+                    <h1>{{ preset[1] }}</h1>
+                    <p>
+                        Passe die Zielbereiche für Temperatur, Luftfeuchtigkeit und Licht an.
+                        Änderungen wirken sich auf alle Terrarien aus, die dieses Preset verwenden.
+                    </p>
+                </div>
 
-            <div class="form-group">
-                <label for="humidity_min">Luftfeuchtigkeit Minimum</label>
-                <input type="number" step="0.1" id="humidity_min" name="humidity_min" value="{{ preset[4] }}" required>
-            </div>
+                <div class="form-hero-card edit-mode">
+                    <div class="form-hero-card-icon">🌦️</div>
 
-            <div class="form-group">
-                <label for="humidity_max">Luftfeuchtigkeit Maximum</label>
-                <input type="number" step="0.1" id="humidity_max" name="humidity_max" value="{{ preset[5] }}" required>
-            </div>
+                    <div>
+                        <span>Aktives Preset</span>
+                        <strong>Habitat-Werte</strong>
+                        <p>Grenzwerte prüfen und feinjustieren.</p>
+                    </div>
+                </div>
+            </section>
 
-            <div class="form-group">
-                <label for="light_min">Licht Minimum</label>
-                <input type="number" id="light_min" name="light_min" value="{{ preset[6] }}" required>
-            </div>
+            <section class="form-layout">
+                <form class="jungle-form" method="POST">
+                    <div class="form-section-title">
+                        <p class="section-kicker">Bearbeiten</p>
+                        <h2>Preset-Einstellungen</h2>
+                    </div>
 
-            <div class="form-group">
-                <label for="light_max">Licht Maximum</label>
-                <input type="number" id="light_max" name="light_max" value="{{ preset[7] }}" required>
-            </div>
+                    <div class="jungle-form-group">
+                        <label for="name">Preset-Name</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value="{{ preset[1] }}"
+                            required
+                        >
+                        <small>Dieser Name erscheint in der Preset-Verwaltung und bei der Terrarium-Auswahl.</small>
+                    </div>
 
-            <button type="submit">Änderungen speichern</button>
-        </form>
-    {% else %}
-        <p>Preset nicht gefunden.</p>
-    {% endif %}
-</body>
-</html>
+                    <div class="range-section">
+                        <div class="range-section-heading">
+                            <div class="range-icon">🌡️</div>
+                            <div>
+                                <h3>Temperatur</h3>
+                                <p>Minimaler und maximaler Temperaturbereich in °C.</p>
+                            </div>
+                        </div>
+
+                        <div class="jungle-form-grid">
+                            <div class="jungle-form-group">
+                                <label for="temperature_min">Minimum</label>
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="temperature_min"
+                                    name="temperature_min"
+                                    value="{{ preset[2] }}"
+                                    required
+                                >
+                            </div>
+
+                            <div class="jungle-form-group">
+                                <label for="temperature_max">Maximum</label>
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="temperature_max"
+                                    name="temperature_max"
+                                    value="{{ preset[3] }}"
+                                    required
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="range-section">
+                        <div class="range-section-heading">
+                            <div class="range-icon">💧</div>
+                            <div>
+                                <h3>Luftfeuchtigkeit</h3>
+                                <p>Gewünschter Feuchtigkeitsbereich in Prozent.</p>
+                            </div>
+                        </div>
+
+                        <div class="jungle-form-grid">
+                            <div class="jungle-form-group">
+                                <label for="humidity_min">Minimum</label>
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="humidity_min"
+                                    name="humidity_min"
+                                    value="{{ preset[4] }}"
+                                    required
+                                >
+                            </div>
+
+                            <div class="jungle-form-group">
+                                <label for="humidity_max">Maximum</label>
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                    id="humidity_max"
+                                    name="humidity_max"
+                                    value="{{ preset[5] }}"
+                                    required
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="range-section">
+                        <div class="range-section-heading">
+                            <div class="range-icon">☀️</div>
+                            <div>
+                                <h3>Licht</h3>
+                                <p>Minimaler und maximaler Lichtwert in lx.</p>
+                            </div>
+                        </div>
+
+                        <div class="jungle-form-grid">
+                            <div class="jungle-form-group">
+                                <label for="light_min">Minimum</label>
+                                <input
+                                    type="number"
+                                    id="light_min"
+                                    name="light_min"
+                                    value="{{ preset[6] }}"
+                                    required
+                                >
+                            </div>
+
+                            <div class="jungle-form-group">
+                                <label for="light_max">Maximum</label>
+                                <input
+                                    type="number"
+                                    id="light_max"
+                                    name="light_max"
+                                    value="{{ preset[7] }}"
+                                    required
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions-row">
+                        <a class="jungle-button secondary" href="/presets">Abbrechen</a>
+                        <button class="jungle-submit-button" type="submit">
+                            Änderungen speichern
+                        </button>
+                    </div>
+                </form>
+
+                <aside class="form-help-card">
+                    <p class="card-kicker">Hinweis</p>
+                    <h2>Werte bewusst ändern</h2>
+                    <p>
+                        Dieses Preset kann mehreren Terrarien zugewiesen sein. Wenn du Grenzwerte änderst,
+                        ändern sich dadurch auch die Zielbereiche auf den zugehörigen Detailseiten.
+                    </p>
+
+                    <div class="help-list">
+                        <div>
+                            <span>01</span>
+                            <p>Namen kontrollieren</p>
+                        </div>
+                        <div>
+                            <span>02</span>
+                            <p>Grenzwerte prüfen</p>
+                        </div>
+                        <div>
+                            <span>03</span>
+                            <p>Änderungen speichern</p>
+                        </div>
+                    </div>
+                </aside>
+            </section>
+        {% else %}
+            <section class="jungle-empty-state">
+                <div class="empty-emoji">🌱</div>
+                <h2>Preset nicht gefunden</h2>
+                <p>Dieses Preset existiert nicht oder wurde bereits gelöscht.</p>
+                <a class="jungle-button primary" href="/presets">
+                    Zurück zur Preset-Verwaltung
+                </a>
+            </section>
+        {% endif %}
+    </main>
+{% endblock %}

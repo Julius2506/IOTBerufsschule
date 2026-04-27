@@ -1,23 +1,19 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Terrarium Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body class="jungle-body">
-    {% include "navbar.html" %}
+{% extends "base.html" %}
+
+{% block title %}Terrarium Dashboard{% endblock %}
+
+{% block content %}
 
     <main class="dashboard-page">
         <section class="jungle-hero">
             <div class="hero-glow"></div>
 
             <div class="jungle-hero-content">
-                <p class="hero-kicker">Smart Terrarium Control</p>
+                <p class="hero-kicker">Smart Terrarium Übersicht</p>
 
                 <h1>
                     Dein digitales
-                    <span>Regenwald-Dashboard</span>
+                    <span>Dashboard</span>
                 </h1>
 
                 <p class="hero-description">
@@ -27,7 +23,7 @@
 
                 <div class="hero-actions">
                     <a class="jungle-button primary" href="/terrariums">Terrarien verwalten</a>
-                    <a class="jungle-button secondary" href="/presets">Presets verwalten</a>
+                    <a class="jungle-button secondary" href="/presets">Klima-Profile</a>
                 </div>
             </div>
 
@@ -56,8 +52,8 @@
 
         <section class="dashboard-toolbar">
             <div>
-                <p class="section-kicker">Übersicht</p>
-                <h2>Terrarium-Landschaft</h2>
+                <p class="section-kicker">DEine Setups</p>
+                <h2>Aktive Terrarien</h2>
             </div>
 
             <a class="jungle-button compact" href="/terrariums/add">
@@ -73,7 +69,7 @@
 
                         <div class="jungle-card-header">
                             <div>
-                                <p class="card-kicker">Terrarium</p>
+                                <p class="card-kicker">Habitat</p>
                                 <h2>{{ terrarium[1] }}</h2>
                             </div>
 
@@ -241,5 +237,4 @@
         fetchTerrariumData();
         setInterval(fetchTerrariumData, 5000);
     </script>
-</body>
-</html>
+{% endblock %}

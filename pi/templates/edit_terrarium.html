@@ -1,53 +1,139 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Terrarium bearbeiten</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    {% include "navbar.html" %}
-    
-    <a href="/terrariums">← Zurück zur Terrarium-Verwaltung</a>
+{% extends "base.html" %}
 
-    <h1>Terrarium bearbeiten</h1>
+{% block title %}Terrarium Dashboard{% endblock %}
 
-    {% if terrarium %}
-        <form method="POST">
-            <div class="form-group">
-                <label for="name">Name des Terrariums</label>
-                <input type="text" id="name" name="name" value="{{ terrarium[1] }}" required>
-            </div>
+{% block content %}
 
-            <div class="form-group">
-                <label for="description">Beschreibung</label>
-                <textarea id="description" name="description" rows="4">{{ terrarium[2] or "" }}</textarea>
-            </div>
+    <main class="form-page">
+        <a class="back-link" href="/terrariums">
+            <span>←</span>
+            Zurück zur Terrarium-Verwaltung
+        </a>
 
-            <div class="form-group">
-                <label for="arduino_id">Arduino-ID</label>
-                <input type="text" id="arduino_id" name="arduino_id" value="{{ terrarium[3] }}" required>
-            </div>
+        {% if terrarium %}
+            <section class="form-hero">
+                <div>
+                    <p class="hero-kicker">Habitat bearbeiten</p>
+                    <h1>{{ terrarium[1] }}</h1>
+                    <p>
+                        Passe Name, Beschreibung, Arduino-Zuordnung oder Klima-Preset für dieses
+                        Terrarium an.
+                    </p>
+                </div>
 
-            <div class="form-group">
-                <label for="preset_id">Preset auswählen</label>
-                <select id="preset_id" name="preset_id">
-                    <option value="">Kein Preset</option>
-                    {% for preset in presets %}
-                        <option
-                            value="{{ preset[0] }}"
-                            {% if terrarium[4] == preset[0] %}selected{% endif %}
+                <div class="form-hero-card edit-mode">
+                    <div class="form-hero-card-icon">🌿</div>
+
+                    <div>
+                        <span>Aktives Setup</span>
+                        <strong>Terrarium-Profil</strong>
+                        <p>Änderungen wirken sich direkt auf Anzeige und Zuordnung aus.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="form-layout">
+                <form class="jungle-form" method="POST">
+                    <div class="form-section-title">
+                        <p class="section-kicker">Bearbeiten</p>
+                        <h2>Terrarium-Informationen</h2>
+                    </div>
+
+                    <div class="jungle-form-group">
+                        <label for="name">Name des Terrariums</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value="{{ terrarium[1] }}"
+                            required
                         >
-                            {{ preset[1] }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
+                        <small>Dieser Name erscheint auf Dashboard, Detailseite und Verwaltung.</small>
+                    </div>
 
-            <button type="submit">Änderungen speichern</button>
-        </form>
-    {% else %}
-        <p>Terrarium nicht gefunden.</p>
-    {% endif %}
-</body>
-</html>
+                    <div class="jungle-form-group">
+                        <label for="description">Beschreibung</label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="5"
+                            placeholder="Kurze Beschreibung zum Becken, Bewohnern oder Standort..."
+                        >{{ terrarium[2] or "" }}</textarea>
+                        <small>Optional, aber hilfreich für die Übersicht.</small>
+                    </div>
+
+                    <div class="jungle-form-grid">
+                        <div class="jungle-form-group">
+                            <label for="arduino_id">Arduino-ID</label>
+                            <input
+                                type="text"
+                                id="arduino_id"
+                                name="arduino_id"
+                                value="{{ terrarium[3] }}"
+                                required
+                            >
+                            <small>Diese ID verknüpft eingehende Sensordaten mit diesem Terrarium.</small>
+                        </div>
+
+                        <div class="jungle-form-group">
+                            <label for="preset_id">Preset auswählen</label>
+                            <select id="preset_id" name="preset_id">
+                                <option value="">Kein Preset</option>
+                                {% for preset in presets %}
+                                    <option
+                                        value="{{ preset[0] }}"
+                                        {% if terrarium[4] == preset[0] %}selected{% endif %}
+                                    >
+                                        {{ preset[1] }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <small>Das Preset definiert Zielwerte für Klima und Licht.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-actions-row">
+                        <a class="jungle-button secondary" href="/terrariums">Abbrechen</a>
+                        <button class="jungle-submit-button" type="submit">
+                            Änderungen speichern
+                        </button>
+                    </div>
+                </form>
+
+                <aside class="form-help-card">
+                    <p class="card-kicker">Hinweis</p>
+                    <h2>Arduino-ID prüfen</h2>
+                    <p>
+                        Wenn du die Arduino-ID änderst, muss sie weiterhin exakt zu der ID passen,
+                        die deine Sensordaten senden. Sonst können neue Messwerte nicht korrekt
+                        zugeordnet werden.
+                    </p>
+
+                    <div class="help-list">
+                        <div>
+                            <span>01</span>
+                            <p>Name und Beschreibung prüfen</p>
+                        </div>
+                        <div>
+                            <span>02</span>
+                            <p>Arduino-ID kontrollieren</p>
+                        </div>
+                        <div>
+                            <span>03</span>
+                            <p>Passendes Preset wählen</p>
+                        </div>
+                    </div>
+                </aside>
+            </section>
+        {% else %}
+            <section class="jungle-empty-state">
+                <div class="empty-emoji">🦎</div>
+                <h2>Terrarium nicht gefunden</h2>
+                <p>Dieses Terrarium existiert nicht oder wurde bereits gelöscht.</p>
+                <a class="jungle-button primary" href="/terrariums">
+                    Zurück zur Verwaltung
+                </a>
+            </section>
+        {% endif %}
+    </main>
+{% endblock %}
