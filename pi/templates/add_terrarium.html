@@ -5,40 +5,124 @@
     <title>Terrarium hinzufügen</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="jungle-body">
     {% include "navbar.html" %}
-    
-    <a href="/terrariums">← Zurück zur Terrarium-Verwaltung</a>
 
-    <h1>Neues Terrarium anlegen</h1>
+    <main class="form-page">
+        <a class="back-link" href="/terrariums">
+            <span>←</span>
+            Zurück zur Terrarium-Verwaltung
+        </a>
 
-    <form method="POST">
-        <div class="form-group">
-            <label for="name">Name des Terrariums</label>
-            <input type="text" id="name" name="name" required>
-        </div>
+        <section class="form-hero">
+            <div>
+                <p class="hero-kicker">Neues Habitat</p>
+                <h1>Terrarium anlegen</h1>
+                <p>
+                    Erstelle ein neues Terrarium, verknüpfe es mit deiner Arduino-ID und wähle optional
+                    ein Klima-Preset für passende Zielwerte.
+                </p>
+            </div>
 
-        <div class="form-group">
-            <label for="description">Beschreibung</label>
-            <textarea id="description" name="description" rows="4"></textarea>
-        </div>
+            <div class="form-hero-card">
+                <div class="form-hero-card-icon">🦎</div>
 
-        <div class="form-group">
-            <label for="arduino_id">Arduino-ID</label>
-            <input type="text" id="arduino_id" name="arduino_id" required>
-        </div>
+                <div>
+                    <span>Neues Setup</span>
+                    <strong>Habitat-Profil</strong>
+                    <p>Name, Arduino-ID und Preset an einem Ort.</p>
+                </div>
+            </div>
+        </section>
 
-        <div class="form-group">
-            <label for="preset_id">Preset auswählen</label>
-            <select id="preset_id" name="preset_id">
-                <option value="">Kein Preset</option>
-                {% for preset in presets %}
-                    <option value="{{ preset[0] }}">{{ preset[1] }}</option>
-                {% endfor %}
-            </select>
-        </div>
+        <section class="form-layout">
+            <form class="jungle-form" method="POST">
+                <div class="form-section-title">
+                    <p class="section-kicker">Basisdaten</p>
+                    <h2>Terrarium-Informationen</h2>
+                </div>
 
-        <button type="submit">Terrarium speichern</button>
-    </form>
+                <div class="jungle-form-group">
+                    <label for="name">Name des Terrariums</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="z. B. Regenwaldbecken, Bartagamen-Terrarium..."
+                        required
+                    >
+                    <small>Der Name wird später auf dem Dashboard angezeigt.</small>
+                </div>
+
+                <div class="jungle-form-group">
+                    <label for="description">Beschreibung</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="5"
+                        placeholder="Kurze Beschreibung zum Becken, Bewohnern oder Standort..."
+                    ></textarea>
+                    <small>Optional, aber hilfreich für die Übersicht.</small>
+                </div>
+
+                <div class="jungle-form-grid">
+                    <div class="jungle-form-group">
+                        <label for="arduino_id">Arduino-ID</label>
+                        <input
+                            type="text"
+                            id="arduino_id"
+                            name="arduino_id"
+                            placeholder="z. B. terra1"
+                            required
+                        >
+                        <small>Muss zur ID passen, die dein Arduino/MQTT sendet.</small>
+                    </div>
+
+                    <div class="jungle-form-group">
+                        <label for="preset_id">Preset auswählen</label>
+                        <select id="preset_id" name="preset_id">
+                            <option value="">Kein Preset</option>
+                            {% for preset in presets %}
+                                <option value="{{ preset[0] }}">{{ preset[1] }}</option>
+                            {% endfor %}
+                        </select>
+                        <small>Du kannst das Preset später jederzeit ändern.</small>
+                    </div>
+                </div>
+
+                <div class="form-actions-row">
+                    <a class="jungle-button secondary" href="/terrariums">Abbrechen</a>
+                    <button class="jungle-submit-button" type="submit">
+                        Terrarium speichern
+                    </button>
+                </div>
+            </form>
+
+            <aside class="form-help-card">
+                <p class="card-kicker">Tipp</p>
+                <h2>Saubere Zuordnung</h2>
+                <p>
+                    Die Arduino-ID ist der Schlüssel zwischen Sensorwerten und Terrarium.
+                    Wenn dein Arduino zum Beispiel <strong>terra1</strong> sendet, muss hier ebenfalls
+                    <strong>terra1</strong> stehen.
+                </p>
+
+                <div class="help-list">
+                    <div>
+                        <span>01</span>
+                        <p>Name vergeben</p>
+                    </div>
+                    <div>
+                        <span>02</span>
+                        <p>Arduino-ID eintragen</p>
+                    </div>
+                    <div>
+                        <span>03</span>
+                        <p>Preset auswählen</p>
+                    </div>
+                </div>
+            </aside>
+        </section>
+    </main>
 </body>
 </html>

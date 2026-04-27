@@ -2,58 +2,99 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Terrarien</title>
+    <title>Terrarien verwalten</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="jungle-body">
     {% include "navbar.html" %}
-    <a href="/">← Zurück zur Übersicht</a>
 
-    <h1>Terrarium-Verwaltung</h1>
+    <main class="management-page">
+        <a class="back-link" href="/">
+            <span>←</span>
+            Zurück zur Übersicht
+        </a>
 
-    <p>
-        <a href="/terrariums/add">+ Neues Terrarium anlegen</a>
-    </p>
+        <section class="management-hero">
+            <div>
+                <p class="hero-kicker">Terrarium Management</p>
+                <h1>Deine Terrarien</h1>
+                <p>
+                    Verwalte Becken, Arduino-Zuordnungen und Presets in einer übersichtlichen
+                    Oberfläche im modernen Regenwald-Stil.
+                </p>
+            </div>
 
-    {% if terrariums %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Beschreibung</th>
-                    <th>Arduino-ID</th>
-                    <th>Preset</th>
-                    <th>Aktionen</th>
-                </tr>
-            </thead>
-            <tbody>
+            <a class="jungle-button primary" href="/terrariums/add">
+                + Neues Terrarium
+            </a>
+        </section>
+
+        {% if terrariums %}
+            <section class="management-grid">
                 {% for terrarium in terrariums %}
-                    <tr>
-                        <td>{{ terrarium[1] }}</td>
-                        <td>{{ terrarium[2] or "Keine Beschreibung" }}</td>
-                        <td>{{ terrarium[3] }}</td>
-                        <td>{{ terrarium[4] or "Kein Preset" }}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <a class="edit-link" href="/terrariums/{{ terrarium[0] }}/edit">Bearbeiten</a>
-
-                                <form action="/terrariums/{{ terrarium[0] }}/delete" method="POST">
-                                    <button
-                                        class="delete-button"
-                                        type="submit"
-                                        onclick="return confirm('Terrarium wirklich löschen? Alle zugehörigen Messwerte werden ebenfalls gelöscht.');"
-                                    >
-                                        Löschen
-                                    </button>
-                                </form>
+                    <article class="management-card">
+                        <div class="management-card-top">
+                            <div>
+                                <p class="card-kicker">Terrarium</p>
+                                <h2>{{ terrarium[1] }}</h2>
                             </div>
-                        </td>
-                    </tr>
+
+                            <span class="status-pill">
+                                Aktiv
+                            </span>
+                        </div>
+
+                        <p class="management-description">
+                            {{ terrarium[2] or "Keine Beschreibung hinterlegt." }}
+                        </p>
+
+                        <div class="management-meta-grid">
+                            <div class="meta-box">
+                                <span>Arduino-ID</span>
+                                <strong>{{ terrarium[3] }}</strong>
+                            </div>
+
+                            <div class="meta-box">
+                                <span>Preset</span>
+                                <strong>{{ terrarium[4] or "Kein Preset" }}</strong>
+                            </div>
+                        </div>
+
+                        <div class="management-actions">
+                            <a class="jungle-button secondary" href="/terrarium/{{ terrarium[0] }}">
+                                Details
+                            </a>
+
+                            <a class="jungle-button compact" href="/terrariums/{{ terrarium[0] }}/edit">
+                                Bearbeiten
+                            </a>
+
+                            <form action="/terrariums/{{ terrarium[0] }}/delete" method="POST">
+                                <button
+                                    class="danger-button"
+                                    type="submit"
+                                    onclick="return confirm('Terrarium wirklich löschen? Alle zugehörigen Messwerte werden ebenfalls gelöscht.');"
+                                >
+                                    Löschen
+                                </button>
+                            </form>
+                        </div>
+                    </article>
                 {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Noch keine Terrarien vorhanden.</p>
-    {% endif %}
+            </section>
+        {% else %}
+            <section class="jungle-empty-state">
+                <div class="empty-emoji">🦎</div>
+                <h2>Noch keine Terrarien vorhanden</h2>
+                <p>
+                    Lege dein erstes Terrarium an und verbinde es später mit einer Arduino-ID
+                    und einem passenden Klima-Preset.
+                </p>
+                <a class="jungle-button primary" href="/terrariums/add">
+                    Erstes Terrarium anlegen
+                </a>
+            </section>
+        {% endif %}
+    </main>
 </body>
 </html>

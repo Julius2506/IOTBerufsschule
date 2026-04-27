@@ -2,59 +2,103 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Presets</title>
+    <title>Presets verwalten</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="jungle-body">
     {% include "navbar.html" %}
-    
-    <a href="/">← Zurück zur Übersicht</a>
 
-    <h1>Preset-Verwaltung</h1>
+    <main class="management-page">
+        <a class="back-link" href="/">
+            <span>←</span>
+            Zurück zur Übersicht
+        </a>
 
-    <p>
-        <a href="/presets/add">+ Neues Preset anlegen</a>
-    </p>
+        <section class="management-hero preset-hero">
+            <div>
+                <p class="hero-kicker">Klima-Profile</p>
+                <h1>Preset-Verwaltung</h1>
+                <p>
+                    Definiere Zielbereiche für Temperatur, Luftfeuchtigkeit und Licht.
+                    So kannst du Terrarien schnell mit passenden Habitat-Profilen verbinden.
+                </p>
+            </div>
 
-    {% if presets %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Temperatur</th>
-                    <th>Luftfeuchtigkeit</th>
-                    <th>Licht</th>
-                    <th>Aktionen</th>
-                </tr>
-            </thead>
-            <tbody>
+            <a class="jungle-button primary" href="/presets/add">
+                + Neues Preset
+            </a>
+        </section>
+
+        {% if presets %}
+            <section class="preset-grid">
                 {% for preset in presets %}
-                    <tr>
-                        <td>{{ preset[1] }}</td>
-                        <td>{{ preset[2] }} bis {{ preset[3] }} °C</td>
-                        <td>{{ preset[4] }} bis {{ preset[5] }} %</td>
-                        <td>{{ preset[6] }} bis {{ preset[7] }}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <a class="edit-link" href="/presets/{{ preset[0] }}/edit">Bearbeiten</a>
-
-                                <form action="/presets/{{ preset[0] }}/delete" method="POST">
-                                    <button
-                                        class="delete-button"
-                                        type="submit"
-                                        onclick="return confirm('Preset wirklich löschen?');"
-                                    >
-                                        Löschen
-                                    </button>
-                                </form>
+                    <article class="preset-card-modern">
+                        <div class="preset-card-top">
+                            <div>
+                                <p class="card-kicker">Habitat Preset</p>
+                                <h2>{{ preset[1] }}</h2>
                             </div>
-                        </td>
-                    </tr>
+
+                            <span class="preset-symbol">🌿</span>
+                        </div>
+
+                        <div class="preset-ranges">
+                            <div class="preset-range-box">
+                                <div class="preset-range-icon">🌡️</div>
+                                <div>
+                                    <span>Temperatur</span>
+                                    <strong>{{ preset[2] }} - {{ preset[3] }} °C</strong>
+                                </div>
+                            </div>
+
+                            <div class="preset-range-box">
+                                <div class="preset-range-icon">💧</div>
+                                <div>
+                                    <span>Luftfeuchtigkeit</span>
+                                    <strong>{{ preset[4] }} - {{ preset[5] }} %</strong>
+                                </div>
+                            </div>
+
+                            <div class="preset-range-box">
+                                <div class="preset-range-icon">☀️</div>
+                                <div>
+                                    <span>Licht</span>
+                                    <strong>{{ preset[6] }} - {{ preset[7] }} lx</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="preset-actions">
+                            <a class="jungle-button compact" href="/presets/{{ preset[0] }}/edit">
+                                Bearbeiten
+                            </a>
+
+                            <form action="/presets/{{ preset[0] }}/delete" method="POST">
+                                <button
+                                    class="danger-button"
+                                    type="submit"
+                                    onclick="return confirm('Preset wirklich löschen? Terrarien mit diesem Preset behalten ihre Daten, verlieren aber die Preset-Zuordnung.');"
+                                >
+                                    Löschen
+                                </button>
+                            </form>
+                        </div>
+                    </article>
                 {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Noch keine Presets vorhanden.</p>
-    {% endif %}
+            </section>
+        {% else %}
+            <section class="jungle-empty-state">
+                <div class="empty-emoji">🌱</div>
+                <h2>Noch keine Presets vorhanden</h2>
+                <p>
+                    Erstelle dein erstes Klima-Profil, zum Beispiel für Regenwald, Wüste,
+                    Trockenwald oder ein tropisches Feuchtterrarium.
+                </p>
+                <a class="jungle-button primary" href="/presets/add">
+                    Erstes Preset anlegen
+                </a>
+            </section>
+        {% endif %}
+    </main>
 </body>
 </html>

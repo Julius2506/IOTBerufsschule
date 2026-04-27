@@ -5,53 +5,201 @@
     <title>Terrarium Details</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="jungle-body">
     {% include "navbar.html" %}
-    
-    <a href="/">← Zurück zur Übersicht</a>
 
-    {% if terrarium %}
-        <h1>{{ terrarium[1] }}</h1>
+    <main class="detail-page">
+        <a class="back-link" href="/">
+            <span>←</span>
+            Zurück zur Übersicht
+        </a>
 
-        <p><strong>Beschreibung:</strong> {{ terrarium[2] or "Keine Beschreibung" }}</p>
-        <p><strong>Arduino-ID:</strong> {{ terrarium[3] }}</p>
-        <p><strong>Preset:</strong> {{ terrarium[4] or "Kein Preset" }}</p>
+        {% if terrarium %}
+            <section class="detail-hero">
+                <div class="detail-hero-content">
+                    <p class="hero-kicker">Terrarium Profil</p>
 
-        <h2>Preset-Werte</h2>
-        <ul>
-            <li>Temperatur: {{ terrarium[5] }} bis {{ terrarium[6] }} °C</li>
-            <li>Luftfeuchtigkeit: {{ terrarium[7] }} bis {{ terrarium[8] }} %</li>
-            <li>Licht: {{ terrarium[9] }} bis {{ terrarium[10] }}</li>
-        </ul>
+                    <h1>{{ terrarium[1] }}</h1>
 
-        <h2>Letzte Messwerte</h2>
+                    <p class="detail-description">
+                        {{ terrarium[2] or "Für dieses Terrarium wurde noch keine Beschreibung hinterlegt." }}
+                    </p>
 
-        {% if readings %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Zeit</th>
-                        <th>Temperatur</th>
-                        <th>Luftfeuchtigkeit</th>
-                        <th>Licht</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for reading in readings %}
-                        <tr>
-                            <td>{{ reading[3] }}</td>
-                            <td>{{ reading[0] }} °C</td>
-                            <td>{{ reading[1] }} %</td>
-                            <td>{{ reading[2] }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    <div class="detail-badge-row">
+                        <span class="jungle-badge">Arduino: {{ terrarium[3] }}</span>
+                        <span class="jungle-badge">{{ terrarium[4] or "Kein Preset" }}</span>
+                    </div>
+                </div>
+
+                <div class="detail-live-panel">
+                    <p class="side-card-label">Letzter Messwert</p>
+
+                    {% if readings %}
+                        <div class="live-main-value">
+                            {{ readings[0][0] }}
+                            <span>°C</span>
+                        </div>
+
+                        <p class="live-subline">
+                            {{ readings[0][1] }} % Luftfeuchtigkeit · {{ readings[0][2] }} lx
+                        </p>
+
+                        <small>{{ readings[0][3] }}</small>
+                    {% else %}
+                        <div class="live-main-value muted">
+                            --
+                            <span>°C</span>
+                        </div>
+
+                        <p class="live-subline">
+                            Noch keine Sensordaten vorhanden.
+                        </p>
+
+                        <small>Warte auf die erste Messung.</small>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="detail-grid">
+                <article class="detail-card preset-card">
+                    <div class="section-heading">
+                        <p class="section-kicker">Zielwerte</p>
+                        <h2>Preset-Klima</h2>
+                    </div>
+
+                    {% if terrarium[4] %}
+                        <div class="preset-value-list">
+                            <div class="preset-value">
+                                <div class="preset-icon">🌡️</div>
+                                <div>
+                                    <span>Temperatur</span>
+                                    <strong>{{ terrarium[5] }} bis {{ terrarium[6] }} °C</strong>
+                                </div>
+                            </div>
+
+                            <div class="preset-value">
+                                <div class="preset-icon">💧</div>
+                                <div>
+                                    <span>Luftfeuchtigkeit</span>
+                                    <strong>{{ terrarium[7] }} bis {{ terrarium[8] }} %</strong>
+                                </div>
+                            </div>
+
+                            <div class="preset-value">
+                                <div class="preset-icon">☀️</div>
+                                <div>
+                                    <span>Licht</span>
+                                    <strong>{{ terrarium[9] }} bis {{ terrarium[10] }} lx</strong>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="soft-empty-box">
+                            <strong>Kein Preset zugewiesen</strong>
+                            <p>
+                                Weise diesem Terrarium ein Preset zu, damit Zielwerte für Temperatur,
+                                Luftfeuchtigkeit und Licht angezeigt werden können.
+                            </p>
+                        </div>
+                    {% endif %}
+                </article>
+
+                <article class="detail-card quick-info-card">
+                    <div class="section-heading">
+                        <p class="section-kicker">Setup</p>
+                        <h2>Systeminformationen</h2>
+                    </div>
+
+                    <div class="info-list">
+                        <div>
+                            <span>Name</span>
+                            <strong>{{ terrarium[1] }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Arduino-ID</span>
+                            <strong>{{ terrarium[3] }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Preset</span>
+                            <strong>{{ terrarium[4] or "Nicht gesetzt" }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="detail-actions">
+                        <a class="jungle-button secondary" href="/terrariums/{{ terrarium[0] }}/edit">
+                            Terrarium bearbeiten
+                        </a>
+                        <a class="jungle-button compact" href="/terrariums">
+                            Verwaltung öffnen
+                        </a>
+                    </div>
+                </article>
+            </section>
+
+            <section class="detail-card readings-card">
+                <div class="section-heading readings-heading">
+                    <div>
+                        <p class="section-kicker">Sensorhistorie</p>
+                        <h2>Letzte Messwerte</h2>
+                    </div>
+
+                    {% if readings %}
+                        <span class="reading-count">{{ readings|length }} Einträge</span>
+                    {% endif %}
+                </div>
+
+                {% if readings %}
+                    <div class="readings-table-wrap">
+                        <table class="jungle-table">
+                            <thead>
+                                <tr>
+                                    <th>Zeit</th>
+                                    <th>Temperatur</th>
+                                    <th>Luftfeuchtigkeit</th>
+                                    <th>Licht</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reading in readings %}
+                                    <tr>
+                                        <td>{{ reading[3] }}</td>
+                                        <td>
+                                            <span class="table-value">{{ reading[0] }}</span>
+                                            <small>°C</small>
+                                        </td>
+                                        <td>
+                                            <span class="table-value">{{ reading[1] }}</span>
+                                            <small>%</small>
+                                        </td>
+                                        <td>
+                                            <span class="table-value">{{ reading[2] }}</span>
+                                            <small>lx</small>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="jungle-empty-state small">
+                        <div class="empty-emoji">🌱</div>
+                        <h3>Noch keine Messwerte vorhanden</h3>
+                        <p>
+                            Sobald dein Arduino Sensordaten sendet, erscheint hier die Historie der letzten Messungen.
+                        </p>
+                    </div>
+                {% endif %}
+            </section>
         {% else %}
-            <p>Noch keine Messwerte vorhanden.</p>
+            <section class="jungle-empty-state">
+                <div class="empty-emoji">🦎</div>
+                <h2>Terrarium nicht gefunden</h2>
+                <p>Dieses Terrarium existiert nicht oder wurde bereits gelöscht.</p>
+                <a class="jungle-button primary" href="/">Zurück zur Übersicht</a>
+            </section>
         {% endif %}
-    {% else %}
-        <p>Terrarium nicht gefunden.</p>
-    {% endif %}
+    </main>
 </body>
 </html>

@@ -2,162 +2,244 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Terrarium Übersicht</title>
+    <title>Terrarium Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
+<body class="jungle-body">
     {% include "navbar.html" %}
 
-    <section class="hero">
-        <div class="hero-content">
-            <p class="hero-eyebrow">Smart Terrarium Dashboard</p>
-            <h1>Terrarium Übersicht</h1>
-            <p class="hero-text">
-                Behalte Temperatur, Luftfeuchtigkeit und Sensordaten deiner Terrarien in Echtzeit im Blick.
-            </p>
+    <main class="dashboard-page">
+        <section class="jungle-hero">
+            <div class="hero-glow"></div>
 
-            <div class="hero-actions">
-                <a class="hero-button primary" href="/terrariums">Terrarien verwalten</a>
-                <a class="hero-button secondary" href="/presets">Presets verwalten</a>
-            </div>
-        </div>
-    </section>
+            <div class="jungle-hero-content">
+                <p class="hero-kicker">Smart Terrarium Control</p>
 
-    {% if terrariums %}
-        <div class="card-container">
-            {% for terrarium in terrariums %}
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <h2>{{ terrarium[1] }}</h2>
-                            <p class="card-description">{{ terrarium[2] or "Keine Beschreibung" }}</p>
-                        </div>
-                    </div>
+                <h1>
+                    Dein digitales
+                    <span>Regenwald-Dashboard</span>
+                </h1>
 
-                    <div class="badge-row">
-                        <span class="info-badge">Arduino: {{ terrarium[3] }}</span>
-                        <span class="info-badge">{{ terrarium[4] or "Kein Preset" }}</span>
-                    </div>
+                <p class="hero-description">
+                    Überwache Temperatur, Luftfeuchtigkeit und Licht deiner Terrarien in einer modernen,
+                    ruhigen Oberfläche mit tropischem Charakter.
+                </p>
 
-                    <div class="sensor-section">
-                        <h3>Aktuelle Werte</h3>
-
-                        {% if terrarium[5] is not none %}
-                            <div class="sensor-grid">
-                                <div class="sensor-box">
-                                    <div class="sensor-label">Temperatur</div>
-                                    <div class="sensor-value"><span id="temp-{{ terrarium[0] }}">{{ terrarium[5] }}</span> <span class="sensor-unit">°C</span></div>
-                                </div>
-
-                                <div class="sensor-box">
-                                    <div class="sensor-label">Luftfeuchtigkeit</div>
-                                    <div class="sensor-value"><span id="humidity-{{ terrarium[0] }}">{{ terrarium[6] }}</span> <span class="sensor-unit">%</span></div>
-                                </div>
-
-                                <div class="sensor-box" id="light-box-{{ terrarium[0] }}">
-                                    <div class="sensor-label">Helligkeit</div>
-                                    <div class="sensor-value"><span id="light-{{ terrarium[0] }}">{{ terrarium[7] }}</span> <span class="sensor-unit">lx</span></div>
-                                </div>
-
-                                <div class="sensor-box">
-                                    <div class="sensor-label">Letzte Messung</div>
-                                    <div class="sensor-timestamp" id="timestamp-{{ terrarium[0] }}">{{ terrarium[8] }}</div>
-                                </div>
-                            </div>
-                        {% else %}
-                            <p id="no-data-{{ terrarium[0] }}">Noch keine Messwerte vorhanden.</p>
-
-                            <div class="sensor-grid">
-                                <div class="sensor-box">
-                                    <div class="sensor-label">Temperatur</div>
-                                    <div class="sensor-value"><span id="temp-{{ terrarium[0] }}">-</span> <span class="sensor-unit">°C</span></div>
-                                </div>
-
-                                <div class="sensor-box">
-                                    <div class="sensor-label">Luftfeuchtigkeit</div>
-                                    <div class="sensor-value"><span id="humidity-{{ terrarium[0] }}">-</span> <span class="sensor-unit">%</span></div>
-                                </div>
-
-                                <div class="sensor-box" id="light-box-{{ terrarium[0] }}">
-                                    <div class="sensor-label">Helligkeit</div>
-                                    <div class="sensor-value"><span id="light-{{ terrarium[0] }}">-</span> <span class="sensor-unit">lx</span></div>
-                                </div>
-
-                                <div class="sensor-box">
-                                    <div class="sensor-label">Letzte Messung</div>
-                                    <div class="sensor-timestamp" id="timestamp-{{ terrarium[0] }}">-</div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <a href="/terrarium/{{ terrarium[0] }}">Details ansehen</a>
+                <div class="hero-actions">
+                    <a class="jungle-button primary" href="/terrariums">Terrarien verwalten</a>
+                    <a class="jungle-button secondary" href="/presets">Presets verwalten</a>
                 </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p>Es sind noch keine Terrarien vorhanden.</p>
-    {% endif %}
+            </div>
+
+            <div class="hero-side-card">
+                <div class="ambient-orb"></div>
+
+                <div class="hero-side-card-inner">
+                    <p class="side-card-label">Systemstatus</p>
+                    <h2>{{ terrariums|length }}</h2>
+                    <p>
+                        {% if terrariums|length == 1 %}
+                            aktives Terrarium im Monitoring
+                        {% else %}
+                            aktive Terrarien im Monitoring
+                        {% endif %}
+                    </p>
+
+                    <div class="side-card-meter">
+                        <span></span>
+                    </div>
+
+                    <small>Live-Daten werden automatisch aktualisiert.</small>
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard-toolbar">
+            <div>
+                <p class="section-kicker">Übersicht</p>
+                <h2>Terrarium-Landschaft</h2>
+            </div>
+
+            <a class="jungle-button compact" href="/terrariums/add">
+                + Neues Terrarium
+            </a>
+        </section>
+
+        {% if terrariums %}
+            <section class="jungle-card-grid">
+                {% for terrarium in terrariums %}
+                    <article class="jungle-card">
+                        <div class="card-leaf"></div>
+
+                        <div class="jungle-card-header">
+                            <div>
+                                <p class="card-kicker">Terrarium</p>
+                                <h2>{{ terrarium[1] }}</h2>
+                            </div>
+
+                            <span class="status-pill">
+                                {% if terrarium[5] is not none %}
+                                    Live
+                                {% else %}
+                                    Bereit
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <p class="jungle-card-description">
+                            {{ terrarium[2] or "Noch keine Beschreibung hinterlegt." }}
+                        </p>
+
+                        <div class="badge-row jungle-badges">
+                            <span class="jungle-badge">Arduino: {{ terrarium[3] }}</span>
+                            <span class="jungle-badge">{{ terrarium[4] or "Kein Preset" }}</span>
+                        </div>
+
+                        <div class="sensor-section">
+                            <div class="sensor-title-row">
+                                <h3>Aktuelle Klimawerte</h3>
+                                <span id="timestamp-{{ terrarium[0] }}">
+                                    {{ terrarium[8] or "Keine Messung" }}
+                                </span>
+                            </div>
+
+                            {% if terrarium[5] is none %}
+                                <p class="no-data-message" id="no-data-{{ terrarium[0] }}">
+                                    Noch keine Sensordaten vorhanden.
+                                </p>
+                            {% endif %}
+
+                            <div class="jungle-sensor-grid">
+                                <div class="jungle-sensor-box">
+                                    <div class="sensor-icon">🌡️</div>
+                                    <div>
+                                        <p>Temperatur</p>
+                                        <strong>
+                                            <span id="temp-{{ terrarium[0] }}">
+                                                {{ terrarium[5] if terrarium[5] is not none else "-" }}
+                                            </span>
+                                            <small>°C</small>
+                                        </strong>
+                                    </div>
+                                </div>
+
+                                <div class="jungle-sensor-box">
+                                    <div class="sensor-icon">💧</div>
+                                    <div>
+                                        <p>Luftfeuchtigkeit</p>
+                                        <strong>
+                                            <span id="humidity-{{ terrarium[0] }}">
+                                                {{ terrarium[6] if terrarium[6] is not none else "-" }}
+                                            </span>
+                                            <small>%</small>
+                                        </strong>
+                                    </div>
+                                </div>
+
+                                <div class="jungle-sensor-box" id="light-box-{{ terrarium[0] }}">
+                                    <div class="sensor-icon">☀️</div>
+                                    <div>
+                                        <p>Helligkeit</p>
+                                        <strong>
+                                            <span id="light-{{ terrarium[0] }}">
+                                                {{ terrarium[7] if terrarium[7] is not none else "-" }}
+                                            </span>
+                                            <small>lx</small>
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="jungle-card-footer">
+                            <a class="details-link" href="/terrarium/{{ terrarium[0] }}">
+                                Details ansehen
+                                <span>→</span>
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </section>
+        {% else %}
+            <section class="jungle-empty-state">
+                <div class="empty-emoji">🦎</div>
+                <h2>Noch keine Terrarien vorhanden</h2>
+                <p>
+                    Lege dein erstes Terrarium an und baue Schritt für Schritt deine eigene digitale
+                    Regenwald-Zentrale auf.
+                </p>
+                <a class="jungle-button primary" href="/terrariums/add">Erstes Terrarium anlegen</a>
+            </section>
+        {% endif %}
+    </main>
+
     <script>
-    async function fetchTerrariumData() {
-        try {
-            const response = await fetch("/api/terrariums");
-            const data = await response.json();
+        async function fetchTerrariumData() {
+            try {
+                const response = await fetch("/api/terrariums");
+                const data = await response.json();
 
-            data.forEach(terrarium => {
-                const tempEl = document.getElementById(`temp-${terrarium.id}`);
-                const humidityEl = document.getElementById(`humidity-${terrarium.id}`);
-                const lightEl = document.getElementById(`light-${terrarium.id}`);
-                const timestampEl = document.getElementById(`timestamp-${terrarium.id}`);
-                const noDataEl = document.getElementById(`no-data-${terrarium.id}`);
-                const lightBoxEl = document.getElementById(`light-box-${terrarium.id}`);
+                data.forEach(terrarium => {
+                    const tempEl = document.getElementById(`temp-${terrarium.id}`);
+                    const humidityEl = document.getElementById(`humidity-${terrarium.id}`);
+                    const lightEl = document.getElementById(`light-${terrarium.id}`);
+                    const timestampEl = document.getElementById(`timestamp-${terrarium.id}`);
+                    const noDataEl = document.getElementById(`no-data-${terrarium.id}`);
+                    const lightBoxEl = document.getElementById(`light-box-${terrarium.id}`);
 
-                if (tempEl) {
-                    tempEl.textContent = terrarium.temperature ?? "-";
-                }
+                    if (tempEl) {
+                        tempEl.textContent = terrarium.temperature ?? "-";
+                    }
 
-                if (humidityEl) {
-                    humidityEl.textContent = terrarium.humidity ?? "-";
-                }
+                    if (humidityEl) {
+                        humidityEl.textContent = terrarium.humidity ?? "-";
+                    }
 
-                if (lightEl) {
-                    lightEl.textContent = terrarium.light ?? "-";
-                }
+                    if (lightEl) {
+                        lightEl.textContent = terrarium.light ?? "-";
+                    }
 
-                if (timestampEl) {
-                    timestampEl.textContent = terrarium.timestamp ?? "-";
-                }
-
-                if (noDataEl && terrarium.temperature !== null) {
-                    noDataEl.style.display = "none";
-                }
-
-                if (lightBoxEl) {
-                    lightBoxEl.classList.remove("status-ok", "status-warning");
+                    if (timestampEl) {
+                        timestampEl.textContent = terrarium.timestamp ?? "Keine Messung";
+                    }
 
                     if (
-                        terrarium.light !== null &&
-                        terrarium.light_min !== null &&
-                        terrarium.light_max !== null
+                        noDataEl &&
+                        (
+                            terrarium.temperature !== null ||
+                            terrarium.humidity !== null ||
+                            terrarium.light !== null
+                        )
                     ) {
+                        noDataEl.style.display = "none";
+                    }
+
+                    if (lightBoxEl) {
+                        lightBoxEl.classList.remove("status-ok", "status-warning");
+
                         if (
-                            terrarium.light >= terrarium.light_min &&
-                            terrarium.light <= terrarium.light_max
+                            terrarium.light !== null &&
+                            terrarium.light_min !== null &&
+                            terrarium.light_max !== null
                         ) {
-                            lightBoxEl.classList.add("status-ok");
-                        } else {
-                            lightBoxEl.classList.add("status-warning");
+                            if (
+                                terrarium.light >= terrarium.light_min &&
+                                terrarium.light <= terrarium.light_max
+                            ) {
+                                lightBoxEl.classList.add("status-ok");
+                            } else {
+                                lightBoxEl.classList.add("status-warning");
+                            }
                         }
                     }
-                }
-            });
-        } catch (error) {
-            console.error("Fehler beim Laden der Terrarium-Daten:", error);
+                });
+            } catch (error) {
+                console.error("Fehler beim Laden der Terrarium-Daten:", error);
+            }
         }
-    }
 
-    fetchTerrariumData();
-    setInterval(fetchTerrariumData, 5000);
+        fetchTerrariumData();
+        setInterval(fetchTerrariumData, 5000);
     </script>
 </body>
 </html>
