@@ -95,7 +95,7 @@
                             <div class="sensor-title-row">
                                 <h3>Aktuelle Klimawerte</h3>
                                 <span id="timestamp-{{ terrarium[0] }}">
-                                    {{ terrarium[8] or "Keine Messung" }}
+                                    {{ terrarium[10] or "Keine Messung" }}
                                 </span>
                             </div>
 
@@ -146,6 +146,38 @@
                                 </div>
                             </div>
                         </div>
+<div class="jungle-sensor-box" id="soil-box-{{ terrarium[0] }}">
+    <div class="sensor-icon">🌱</div>
+    <div>
+        <p>Bodenfeuchtigkeit</p>
+        <strong>
+            <span id="soil-{{ terrarium[0] }}">
+                {{ terrarium[8] if terrarium[8] is not none else "-" }}
+            </span>
+            <small>%</small>
+        </strong>
+    </div>
+</div>
+
+<div class="jungle-sensor-box" id="motion-box-{{ terrarium[0] }}">
+    <div class="sensor-icon">👁️</div>
+    <div>
+        <p>Bewegung</p>
+        <strong>
+            <span id="motion-{{ terrarium[0] }}">
+                {% if terrarium[9] is not none %}
+                    {% if terrarium[9] == 1 %}
+                        Ja
+                    {% else %}
+                        Nein
+                    {% endif %}
+                {% else %}
+                    -
+                {% endif %}
+            </span>
+        </strong>
+    </div>
+</div>
 
                         <div class="jungle-card-footer">
                             <a class="details-link" href="/terrarium/{{ terrarium[0] }}">
@@ -179,6 +211,8 @@
                     const tempEl = document.getElementById(`temp-${terrarium.id}`);
                     const humidityEl = document.getElementById(`humidity-${terrarium.id}`);
                     const lightEl = document.getElementById(`light-${terrarium.id}`);
+                    const soilEl = document.getElementById(`soil-${terrarium.id}`);
+                    const motionEl = document.getElementById(`motion-${terrarium.id}`);
                     const timestampEl = document.getElementById(`timestamp-${terrarium.id}`);
                     const noDataEl = document.getElementById(`no-data-${terrarium.id}`);
                     const lightBoxEl = document.getElementById(`light-box-${terrarium.id}`);
@@ -194,6 +228,19 @@
                     if (lightEl) {
                         lightEl.textContent = terrarium.light ?? "-";
                     }
+                    if (soilEl) {
+                        soilEl.textContent = terrarium.soil_moisture ?? "-";
+                    }
+                    if (motionEl) {
+                        if (terrarium.motion === null || terrarium.motion === undefined) {
+                            motionEl.textContent = "-";
+                        } else if (terrarium.motion === 1) {
+                            motionEl.textContent = "Ja";
+                        } else {
+                            motionEl.textContent = "Nein";
+                        }
+                    }
+                        
 
                     if (timestampEl) {
                         timestampEl.textContent = terrarium.timestamp ?? "Keine Messung";
@@ -204,7 +251,9 @@
                         (
                             terrarium.temperature !== null ||
                             terrarium.humidity !== null ||
-                            terrarium.light !== null
+                            terrarium.light !== null ||
+                            terrarium.soil_moisture !== null ||
+                            terrarium.motion !== null
                         )
                     ) {
                         noDataEl.style.display = "none";

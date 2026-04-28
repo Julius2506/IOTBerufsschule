@@ -7,13 +7,14 @@
 const char* ssid = "FES-SuS";
 const char* password = "SuS-WLAN!Key24";
 
-const char* mqtt_server = "10.93.133.204";
+const char* mqtt_server = "10.93.134.218";
 const int mqtt_port = 1883;
 
 const char* arduino_id = "terra1";
 
 #define DHTPIN 15
 #define DHTTYPE DHT11
+#define PIRPIN 18 
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -61,6 +62,9 @@ void setup() {
   delay(1000);
 
   dht.begin();
+
+  pinMode(PIRPIN, INPUT);
+
   Wire.begin(21, 22);
 
   if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
@@ -91,6 +95,7 @@ void loop() {
     float humidity = dht.readHumidity();
     float temperature = dht.readTemperature();
     float lux = lightMeter.readLightLevel();
+    bool motionDetected = digitalRead(PIRPIN) == HIGH;
 
     if (isnan(humidity) || isnan(temperature)) {
       Serial.println("Fehler beim Lesen vom DHT11");
@@ -103,6 +108,8 @@ void loop() {
     payload += "\"temperature\":" + String(temperature, 1) + ",";
     payload += "\"humidity\":" + String(humidity, 1) + ",";
     payload += "\"light\":" + String(lux, 1);
+    payload += "\"motion\":";
+    payload += motionDetected ? "true" : "false";
     payload += "}";
 
     String topic = "terrarium/" + String(arduino_id) + "/sensor";

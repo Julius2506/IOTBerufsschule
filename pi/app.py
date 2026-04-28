@@ -19,7 +19,10 @@ def index():
                 latest.temperature,
                 latest.humidity,
                 latest.light,
+                latest.soil_moisture,
+                latest.motion,
                 latest.timestamp
+                       
             FROM terrariums
             LEFT JOIN presets
                 ON terrariums.preset_id = presets.id
@@ -72,6 +75,8 @@ def terrarium_detail(terrarium_id):
             temperature,
             humidity,
             light,
+            soil_moisture,
+            motion,
             timestamp
         FROM sensor_readings
         WHERE terrarium_id = ?
@@ -369,6 +374,8 @@ def api_terrariums():
                 latest.temperature,
                 latest.humidity,
                 latest.light,
+                latest.soil_moisture,
+                latest.motion,
                 latest.timestamp
             FROM terrariums
             LEFT JOIN presets
@@ -403,7 +410,9 @@ def api_terrariums():
             "temperature": row[7],
             "humidity": row[8],
             "light": row[9],
-            "timestamp": row[10]
+            "soil_moisture": row[10],
+            "motion": row[11],
+            "timestamp": row[12]
         })
 
     return jsonify(terrariums)

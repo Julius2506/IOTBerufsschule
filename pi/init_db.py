@@ -37,6 +37,8 @@ def init_db():
             temperature REAL,
             humidity REAL,
             light INTEGER,
+            soil_moisture REAL,
+            motion INTEGER,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (terrarium_id) REFERENCES terrariums(id)
         )
