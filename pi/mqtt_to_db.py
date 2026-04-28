@@ -37,15 +37,19 @@ def save_reading(data):
                 terrarium_id,
                 temperature,
                 humidity,
-                light
+                light,
+                soil_moisture,
+                motion
             )
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         """, (
             arduino_id,
             terrarium_id,
             data.get("temperature"),
             data.get("humidity"),
-            data.get("light")
+            data.get("light"),
+            data.get("soil_moisture"),
+            1 if data.get("motion") else 0
         ))
 
     return terrarium_id
