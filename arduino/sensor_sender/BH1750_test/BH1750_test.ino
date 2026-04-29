@@ -14,7 +14,8 @@ const char* arduino_id = "terra1";
 
 #define DHTPIN 15
 #define DHTTYPE DHT11
-#define PIRPIN 18 
+
+#define PIRPIN 27   // HC-SR501 OUT an GPIO 27
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -43,8 +44,7 @@ void connectToMQTT() {
   while (!client.connected()) {
     Serial.print("Verbinde mit MQTT... ");
 
-    String clientId = "ESP32Client-";
-    clientId += String(random(0xffff), HEX);
+    String clientId = "ESP32-" + String(arduino_id);
 
     if (client.connect(clientId.c_str())) {
       Serial.println("verbunden");
@@ -75,6 +75,8 @@ void setup() {
 
   connectToWiFi();
   client.setServer(mqtt_server, mqtt_port);
+
+  Serial.println("PIR Bewegungssensor gestartet");
 }
 
 void loop() {
@@ -95,6 +97,7 @@ void loop() {
     float humidity = dht.readHumidity();
     float temperature = dht.readTemperature();
     float lux = lightMeter.readLightLevel();
+
     bool motionDetected = digitalRead(PIRPIN) == HIGH;
 
     if (isnan(humidity) || isnan(temperature)) {
@@ -107,7 +110,7 @@ void loop() {
     payload += "\"arduino_id\":\"" + String(arduino_id) + "\",";
     payload += "\"temperature\":" + String(temperature, 1) + ",";
     payload += "\"humidity\":" + String(humidity, 1) + ",";
-    payload += "\"light\":" + String(lux, 1);
+    payload += "\"light\":" + String(lux, 1) + ",";
     payload += "\"motion\":";
     payload += motionDetected ? "true" : "false";
     payload += "}";
@@ -116,11 +119,13 @@ void loop() {
 
     bool ok = client.publish(topic.c_str(), payload.c_str());
 
-    Serial.println("Sende MQTT-Nachricht mit DHT11 + BH1750...");
+    Serial.println("Sende MQTT-Nachricht mit DHT11 + BH1750 + PIR...");
     Serial.print("Topic: ");
     Serial.println(topic);
     Serial.print("Payload: ");
     Serial.println(payload);
+    Serial.print("Bewegung erkannt: ");
+    Serial.println(motionDetected ? "ja" : "nein");
     Serial.print("Erfolgreich: ");
     Serial.println(ok ? "ja" : "nein");
     Serial.println("--------------------");
