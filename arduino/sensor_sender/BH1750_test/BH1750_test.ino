@@ -16,6 +16,7 @@ const char* arduino_id = "terra1";
 #define DHTTYPE DHT11
 
 #define PIRPIN 27   // HC-SR501 OUT an GPIO 27
+bool motionSinceLastPublish = false;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -88,6 +89,10 @@ void loop() {
     connectToMQTT();
   }
 
+  if (digitalRead(PIRPIN) == HIGH) {
+    motionSinceLastPublish = true;
+  }
+
   client.loop();
 
   unsigned long now = millis();
@@ -98,7 +103,8 @@ void loop() {
     float temperature = dht.readTemperature();
     float lux = lightMeter.readLightLevel();
 
-    bool motionDetected = digitalRead(PIRPIN) == HIGH;
+    bool motionDetected = motionSinceLastPublish;
+    motionSinceLastPublish = false;
 
     if (isnan(humidity) || isnan(temperature)) {
       Serial.println("Fehler beim Lesen vom DHT11");
