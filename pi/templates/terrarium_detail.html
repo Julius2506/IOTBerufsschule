@@ -37,7 +37,7 @@
                         </div>
 
                         <p class="live-subline">
-                            {{ readings[0][1] }} % Luftfeuchtigkeit · {{ readings[0][2] }} lx
+                            {{ readings[0][1] }} % Luftfeuchtigkeit · {{ readings[0][2] }} lx · {{ readings[0][3] }} % Bodenfeuchtigkeit
                         </p>
 
                         <small>{{ readings[0][3] }}</small>
@@ -121,7 +121,7 @@
                         </div>
 
                         <div>
-                            <span>Arduino-ID</span>
+                            <span>Sensor-ID</span>
                             <strong>{{ terrarium[3] }}</strong>
                         </div>
 
@@ -163,6 +163,7 @@
                                     <th>Temperatur</th>
                                     <th>Luftfeuchtigkeit</th>
                                     <th>Licht</th>
+                                    <th>Bodenfeuchtigkeit</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -181,7 +182,12 @@
                                             <span class="table-value">{{ reading[2] }}</span>
                                             <small>lx</small>
                                         </td>
+                                        <td>
+                                            <span class="table-value">{{ reading[4] }}</span>
+                                            <small>%</small>
+                                        </td>
                                     </tr>
+                                    
                                 {% endfor %}
                             </tbody>
                         </table>
