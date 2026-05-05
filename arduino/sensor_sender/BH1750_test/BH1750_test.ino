@@ -136,12 +136,6 @@ void loop() {
     float temperature = dht.readTemperature();
     float lux = lightMeter.readLightLevel();
 
-    if (lux < 0) {
-      Serial.print("BH1750 Fehler beim Lesen, Code: ");
-      Serial.println(lux);
-      lux = 0;
-    }
-
     int soilRaw = readSoilRaw();
     int soilMoisture = soilRawToPercent(soilRaw);
 
@@ -163,7 +157,6 @@ void loop() {
     payload += motionDetected ? "true" : "false";
     payload += ",";
     payload += "\"soil_raw\":" + String(soilRaw) + ",";
-    payload += "\"soil_moisture\":" + String(soilMoisture);
     payload += "}";
 
     String topic = "terrarium/" + String(arduino_id) + "/sensor";
@@ -180,10 +173,6 @@ void loop() {
 
     Serial.print("Bodenfeuchte Rohwert: ");
     Serial.println(soilRaw);
-
-    Serial.print("Bodenfeuchte Prozent: ");
-    Serial.print(soilMoisture);
-    Serial.println(" %");
 
     Serial.print("Erfolgreich: ");
     Serial.println(ok ? "ja" : "nein");
