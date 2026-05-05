@@ -13,7 +13,9 @@ def init_db():
             humidity_min REAL,
             humidity_max REAL,
             light_min INTEGER,
-            light_max INTEGER
+            light_max INTEGER,
+            soil_moisture_min INTEGER,
+            soil_moisture_max INTEGER
         )
     """)
 

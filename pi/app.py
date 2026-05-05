@@ -232,7 +232,9 @@ def add_preset():
         humidity_max = request.form["humidity_max"]
         light_min = request.form["light_min"]
         light_max = request.form["light_max"]
-
+        soil_moisture_min = request.form["soil_moisture_min"]
+        soil_moisture_max = request.form["soil_moisture_max"]
+        
         with get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""
@@ -243,9 +245,11 @@ def add_preset():
                     humidity_min,
                     humidity_max,
                     light_min,
-                    light_max
+                    light_max,
+                    soil_moisture_min,
+                    soil_moisture_max
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 name,
                 temperature_min,
@@ -253,7 +257,9 @@ def add_preset():
                 humidity_min,
                 humidity_max,
                 light_min,
-                light_max
+                light_max,
+                soil_moisture_min,
+                soil_moisture_max
             ))
 
         return redirect(url_for("list_presets"))
@@ -274,7 +280,9 @@ def list_presets():
                 humidity_min,
                 humidity_max,
                 light_min,
-                light_max
+                light_max,
+                soil_moisture_min,
+                soil_moisture_max
             FROM presets
             ORDER BY name ASC
         """)
@@ -296,6 +304,8 @@ def edit_preset(preset_id):
             humidity_max = request.form["humidity_max"]
             light_min = request.form["light_min"]
             light_max = request.form["light_max"]
+            soil_moisture_min = request.form["soil_moisture_min"]
+            soil_moisture_max = request.form["soil_moisture_max"]
 
             cursor.execute("""
                 UPDATE presets
@@ -306,7 +316,9 @@ def edit_preset(preset_id):
                     humidity_min = ?,
                     humidity_max = ?,
                     light_min = ?,
-                    light_max = ?
+                    light_max = ?,
+                    soil_moisture_min = ?,
+                    soil_moisture_max = ?
                 WHERE id = ?
             """, (
                 name,
@@ -316,6 +328,8 @@ def edit_preset(preset_id):
                 humidity_max,
                 light_min,
                 light_max,
+                soil_moisture_min,
+                soil_moisture_max,
                 preset_id
             ))
 
@@ -331,6 +345,8 @@ def edit_preset(preset_id):
                 humidity_max,
                 light_min,
                 light_max
+                soil_moisture_min,
+                soil_moisture_max
             FROM presets
             WHERE id = ?
         """, (preset_id,))

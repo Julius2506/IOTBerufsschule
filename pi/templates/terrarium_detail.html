@@ -22,7 +22,7 @@
                     </p>
 
                     <div class="detail-badge-row">
-                        <span class="jungle-badge">Arduino: {{ terrarium[3] }}</span>
+                        <span class="jungle-badge">Sensor: {{ terrarium[3] }}</span>
                         <span class="jungle-badge">{{ terrarium[4] or "Kein Preset" }}</span>
                     </div>
                 </div>
@@ -86,6 +86,14 @@
                                 <div>
                                     <span>Licht</span>
                                     <strong>{{ terrarium[9] }} bis {{ terrarium[10] }} lx</strong>
+                                </div>
+                            </div>
+
+                            <div class="preset-value">
+                                <div class="preset-icon">🌱</div>
+                                <div>
+                                    <span>Bodenfeuchtigkeit</span>
+                                    <strong>{{ terrarium[11] }} bis {{ terrarium[12] }} %</strong>
                                 </div>
                             </div>
                         </div>
@@ -183,7 +191,7 @@
                         <div class="empty-emoji">🌱</div>
                         <h3>Noch keine Messwerte vorhanden</h3>
                         <p>
-                            Sobald dein Arduino Sensordaten sendet, erscheint hier die Historie der letzten Messungen.
+                            Sobald Sensordaten vorhanden sind, erscheint hier die Historie der letzten Messungen.
                         </p>
                     </div>
                 {% endif %}
