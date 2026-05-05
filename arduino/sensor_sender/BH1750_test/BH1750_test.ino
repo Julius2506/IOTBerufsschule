@@ -17,6 +17,13 @@ const char* arduino_id = "terra1";
 
 #define PIRPIN 27   // HC-SR501 OUT an GPIO 27
 
+#define SOILPIN 34  // AO vom Bodenfeuchtigkeitssensor an GPIO34
+
+// Diese Werte sind Startwerte.
+// Wir kalibrieren sie später mit deinen echten Messwerten.
+const int SOIL_DRY_RAW = 4095;  // komplett trocken
+const int SOIL_WET_RAW = 1500;  // sehr feucht / nass
+
 bool motionSinceLastPublish = false;
 
 WiFiClient espClient;
@@ -59,6 +66,27 @@ void connectToMQTT() {
   }
 }
 
+int readSoilRaw() {
+  long sum = 0;
+  const int samples = 10;
+
+  for (int i = 0; i < samples; i++) {
+    sum += analogRead(SOILPIN);
+    delay(5);
+  }
+
+  return sum / samples;
+}
+
+int soilRawToPercent(int rawValue) {
+  // Meist gilt bei diesen Sensoren:
+  // hoher Wert = trocken
+  // niedriger Wert = feucht
+  int percent = map(rawValue, SOIL_DRY_RAW, SOIL_WET_RAW, 0, 100);
+  percent = constrain(percent, 0, 100);
+  return percent;
+}
+
 void setup() {
   Serial.begin(115200);
   delay(1000);
@@ -66,6 +94,10 @@ void setup() {
   dht.begin();
 
   pinMode(PIRPIN, INPUT);
+  pinMode(SOILPIN, INPUT);
+
+  analogReadResolution(12); // ESP32: Wertebereich 0 bis 4095
+  analogSetPinAttenuation(SOILPIN, ADC_11db);
 
   // BH1750 starten
   Wire.begin(21, 22);        // SDA = GPIO21, SCL = GPIO22
@@ -87,6 +119,7 @@ void setup() {
   client.setServer(mqtt_server, mqtt_port);
 
   Serial.println("PIR Bewegungssensor gestartet");
+  Serial.println("Bodenfeuchtigkeitssensor gestartet");
 }
 
 void loop() {
@@ -123,6 +156,10 @@ void loop() {
       lux = 0;
     }
 
+    // Bodenfeuchtigkeit auslesen
+    int soilRaw = readSoilRaw();
+    int soilMoisture = soilRawToPercent(soilRaw);
+
     bool motionDetected = motionSinceLastPublish;
     motionSinceLastPublish = false;
 
@@ -139,22 +176,35 @@ void loop() {
     payload += "\"light\":" + String(lux, 1) + ",";
     payload += "\"motion\":";
     payload += motionDetected ? "true" : "false";
+    payload += ",";
+    payload += "\"soil_raw\":" + String(soilRaw) + ",";
+    payload += "\"soil_moisture\":" + String(soilMoisture);
     payload += "}";
 
     String topic = "terrarium/" + String(arduino_id) + "/sensor";
 
     bool ok = client.publish(topic.c_str(), payload.c_str());
 
-    Serial.println("Sende MQTT-Nachricht mit DHT11 + BH1750 + PIR...");
+    Serial.println("Sende MQTT-Nachricht mit DHT11 + BH1750 + PIR + Bodenfeuchtigkeit...");
     Serial.print("Topic: ");
     Serial.println(topic);
     Serial.print("Payload: ");
     Serial.println(payload);
+
     Serial.print("Lichtwert: ");
     Serial.print(lux);
     Serial.println(" lx");
+
     Serial.print("Bewegung erkannt: ");
     Serial.println(motionDetected ? "ja" : "nein");
+
+    Serial.print("Bodenfeuchte Rohwert: ");
+    Serial.println(soilRaw);
+
+    Serial.print("Bodenfeuchte Prozent: ");
+    Serial.print(soilMoisture);
+    Serial.println(" %");
+
     Serial.print("Erfolgreich: ");
     Serial.println(ok ? "ja" : "nein");
     Serial.println("--------------------");
