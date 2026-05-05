@@ -4,8 +4,8 @@
 #include <Wire.h>
 #include <BH1750.h>
 
-const char* ssid = "DEIN_WLAN_NAME";
-const char* password = "DEIN_WLAN_PASSWORT";
+const char* ssid = "FES-SuS";
+const char* password = "SuS-WLAN!Key24";
 
 const char* mqtt_server = "10.93.134.218";
 const int mqtt_port = 1883;
