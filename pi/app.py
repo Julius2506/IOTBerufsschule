@@ -76,7 +76,9 @@ def terrarium_detail(terrarium_id):
             presets.humidity_min,
             presets.humidity_max,
             presets.light_min,
-            presets.light_max
+            presets.light_max,
+            presets.soil_moisture_min,
+            presets.soil_moisture_max
         FROM terrariums
         LEFT JOIN presets ON terrariums.preset_id = presets.id
         WHERE terrariums.id = ?
