@@ -4,8 +4,8 @@
 #include <Wire.h>
 #include <BH1750.h>
 
-const char* ssid = "FES-SuS";
-const char* password = "SuS-WLAN!Key24";
+const char* ssid = "DEIN_WLAN_NAME";
+const char* password = "DEIN_WLAN_PASSWORT";
 
 const char* mqtt_server = "10.93.134.218";
 const int mqtt_port = 1883;
@@ -16,12 +16,6 @@ const char* arduino_id = "terra1";
 #define DHTTYPE DHT11
 
 #define PIRPIN 27   // HC-SR501 OUT an GPIO 27
-
-#define SOILPIN 34  // AO vom Bodenfeuchtigkeitssensor an GPIO34
-
-// Erstmal Startwerte. Die kalibrieren wir später.
-const int SOIL_DRY_RAW = 4095;  // trocken
-const int SOIL_WET_RAW = 1500;  // nass
 
 bool motionSinceLastPublish = false;
 
@@ -65,27 +59,6 @@ void connectToMQTT() {
   }
 }
 
-int readSoilRaw() {
-  long sum = 0;
-  const int samples = 10;
-
-  for (int i = 0; i < samples; i++) {
-    sum += analogRead(SOILPIN);
-    delay(5);
-  }
-
-  return sum / samples;
-}
-
-int soilRawToPercent(int rawValue) {
-  // Meist gilt:
-  // hoher Wert = trocken
-  // niedriger Wert = feucht
-  int percent = map(rawValue, SOIL_DRY_RAW, SOIL_WET_RAW, 0, 100);
-  percent = constrain(percent, 0, 100);
-  return percent;
-}
-
 void setup() {
   Serial.begin(115200);
   delay(1000);
@@ -93,19 +66,22 @@ void setup() {
   dht.begin();
 
   pinMode(PIRPIN, INPUT);
-  pinMode(SOILPIN, INPUT);
 
-  analogReadResolution(12); // ESP32: Werte von 0 bis 4095
-  analogSetPinAttenuation(SOILPIN, ADC_11db);
+  // BH1750 starten
+  Wire.begin(21, 22);        // SDA = GPIO21, SCL = GPIO22
+  Wire.setClock(100000);     // I2C langsamer/stabiler machen
 
-  Wire.begin(21, 22);
+  Serial.println("Starte BH1750...");
 
-  if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, 0x23)) {
+  bool bh1750_ok = lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, 0x23);
+
+  if (bh1750_ok) {
     Serial.println("BH1750 gestartet auf Adresse 0x23");
-    delay(200);  // wichtig: erste Messung abwarten
   } else {
-    Serial.println("Fehler beim Starten des BH1750 auf Adresse 0x23");
+    Serial.println("BH1750 konnte NICHT gestartet werden auf Adresse 0x23");
   }
+
+  delay(500); // wichtig: erste Messung abwarten
 
   connectToWiFi();
   client.setServer(mqtt_server, mqtt_port);
@@ -121,7 +97,7 @@ void loop() {
   if (!client.connected()) {
     connectToMQTT();
   }
-  
+
   if (digitalRead(PIRPIN) == HIGH) {
     motionSinceLastPublish = true;
   }
@@ -129,15 +105,23 @@ void loop() {
   client.loop();
 
   unsigned long now = millis();
+
   if (now - lastPublish >= publishInterval) {
     lastPublish = now;
 
     float humidity = dht.readHumidity();
     float temperature = dht.readTemperature();
+
+    // BH1750 auslesen
     float lux = lightMeter.readLightLevel();
 
-    int soilRaw = readSoilRaw();
-    int soilMoisture = soilRawToPercent(soilRaw);
+    if (lux < 0) {
+      Serial.print("BH1750 Fehlercode: ");
+      Serial.println(lux);
+
+      // Damit kein -1 oder -2 per MQTT gesendet wird
+      lux = 0;
+    }
 
     bool motionDetected = motionSinceLastPublish;
     motionSinceLastPublish = false;
@@ -155,8 +139,6 @@ void loop() {
     payload += "\"light\":" + String(lux, 1) + ",";
     payload += "\"motion\":";
     payload += motionDetected ? "true" : "false";
-    payload += ",";
-    payload += "\"soil_raw\":" + String(soilRaw) + ",";
     payload += "}";
 
     String topic = "terrarium/" + String(arduino_id) + "/sensor";
@@ -168,12 +150,11 @@ void loop() {
     Serial.println(topic);
     Serial.print("Payload: ");
     Serial.println(payload);
+    Serial.print("Lichtwert: ");
+    Serial.print(lux);
+    Serial.println(" lx");
     Serial.print("Bewegung erkannt: ");
     Serial.println(motionDetected ? "ja" : "nein");
-
-    Serial.print("Bodenfeuchte Rohwert: ");
-    Serial.println(soilRaw);
-
     Serial.print("Erfolgreich: ");
     Serial.println(ok ? "ja" : "nein");
     Serial.println("--------------------");
