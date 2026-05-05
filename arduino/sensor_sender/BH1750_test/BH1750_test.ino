@@ -16,6 +16,13 @@ const char* arduino_id = "terra1";
 #define DHTTYPE DHT11
 
 #define PIRPIN 27   // HC-SR501 OUT an GPIO 27
+
+#define SOILPIN 34  // AO vom Bodenfeuchtigkeitssensor an GPIO34
+
+// Erstmal Startwerte. Die kalibrieren wir später.
+const int SOIL_DRY_RAW = 4095;  // trocken
+const int SOIL_WET_RAW = 1500;  // nass
+
 bool motionSinceLastPublish = false;
 
 WiFiClient espClient;
@@ -58,6 +65,27 @@ void connectToMQTT() {
   }
 }
 
+int readSoilRaw() {
+  long sum = 0;
+  const int samples = 10;
+
+  for (int i = 0; i < samples; i++) {
+    sum += analogRead(SOILPIN);
+    delay(5);
+  }
+
+  return sum / samples;
+}
+
+int soilRawToPercent(int rawValue) {
+  // Meist gilt:
+  // hoher Wert = trocken
+  // niedriger Wert = feucht
+  int percent = map(rawValue, SOIL_DRY_RAW, SOIL_WET_RAW, 0, 100);
+  percent = constrain(percent, 0, 100);
+  return percent;
+}
+
 void setup() {
   Serial.begin(115200);
   delay(1000);
@@ -65,6 +93,10 @@ void setup() {
   dht.begin();
 
   pinMode(PIRPIN, INPUT);
+  pinMode(SOILPIN, INPUT);
+
+  analogReadResolution(12); // ESP32: Werte von 0 bis 4095
+  analogSetPinAttenuation(SOILPIN, ADC_11db);
 
   Wire.begin(21, 22);
 
@@ -88,7 +120,7 @@ void loop() {
   if (!client.connected()) {
     connectToMQTT();
   }
-
+  
   if (digitalRead(PIRPIN) == HIGH) {
     motionSinceLastPublish = true;
   }
@@ -102,6 +134,9 @@ void loop() {
     float humidity = dht.readHumidity();
     float temperature = dht.readTemperature();
     float lux = lightMeter.readLightLevel();
+
+    int soilRaw = readSoilRaw();
+    int soilMoisture = soilRawToPercent(soilRaw);
 
     bool motionDetected = motionSinceLastPublish;
     motionSinceLastPublish = false;
@@ -119,6 +154,9 @@ void loop() {
     payload += "\"light\":" + String(lux, 1) + ",";
     payload += "\"motion\":";
     payload += motionDetected ? "true" : "false";
+    payload += ",";
+    payload += "\"soil_raw\":" + String(soilRaw) + ",";
+    payload += "\"soil_moisture\":" + String(soilMoisture);
     payload += "}";
 
     String topic = "terrarium/" + String(arduino_id) + "/sensor";
@@ -132,6 +170,14 @@ void loop() {
     Serial.println(payload);
     Serial.print("Bewegung erkannt: ");
     Serial.println(motionDetected ? "ja" : "nein");
+
+    Serial.print("Bodenfeuchte Rohwert: ");
+    Serial.println(soilRaw);
+
+    Serial.print("Bodenfeuchte Prozent: ");
+    Serial.print(soilMoisture);
+    Serial.println(" %");
+
     Serial.print("Erfolgreich: ");
     Serial.println(ok ? "ja" : "nein");
     Serial.println("--------------------");
