@@ -87,8 +87,8 @@
                         </p>
 
                         <div class="badge-row jungle-badges">
-                            <span class="jungle-badge">Arduino: {{ terrarium[3] }}</span>
-                            <span class="jungle-badge">{{ terrarium[4] or "Kein Preset" }}</span>
+                            <span class="jungle-badge">Sensor: {{ terrarium[3] }}</span>
+                            <span class="jungle-badge">Klima-Profil: {{ terrarium[4] or "Kein Preset" }}</span>
                         </div>
 
                         <div class="sensor-section">
@@ -146,38 +146,31 @@
                                 </div>
                             </div>
                         </div>
-<div class="jungle-sensor-box" id="soil-box-{{ terrarium[0] }}">
-    <div class="sensor-icon">🌱</div>
-    <div>
-        <p>Bodenfeuchtigkeit</p>
-        <strong>
-            <span id="soil-{{ terrarium[0] }}">
-                {{ terrarium[8] if terrarium[8] is not none else "-" }}
-            </span>
-            <small>%</small>
-        </strong>
-    </div>
-</div>
 
-<div class="jungle-sensor-box" id="motion-box-{{ terrarium[0] }}">
-    <div class="sensor-icon">👁️</div>
-    <div>
-        <p>Bewegung</p>
-        <strong>
-            <span id="motion-{{ terrarium[0] }}">
-                {% if terrarium[9] is not none %}
-                    {% if terrarium[9] == 1 %}
-                        Ja
-                    {% else %}
-                        Nein
-                    {% endif %}
-                {% else %}
-                    -
-                {% endif %}
-            </span>
-        </strong>
-    </div>
-</div>
+                        <div class="jungle-sensor-box" id="soil-box-{{ terrarium[0] }}">
+                            <div class="sensor-icon">🌱</div>
+                            <div>
+                                <p>Bodenfeuchtigkeit</p>
+                                <strong>
+                                    <span id="soil-{{ terrarium[0] }}">
+                                        {{ terrarium[8] if terrarium[8] is not none else "-" }}
+                                    </span>
+                                    <small>%</small>
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div class="jungle-sensor-box" id="motion-box-{{ terrarium[0] }}">
+                            <div class="sensor-icon">👁️</div>
+                            <div>
+                                <p>Bewegung</p>
+                                <strong>
+                                    <span id="motion-{{ terrarium[0] }}">
+                                        {{ terrarium[11] if terrarium[11] is not none else "noch keine Bewegung erfasst" }}
+                                    </span>
+                                </strong>
+                            </div>
+                        </div>
 
                         <div class="jungle-card-footer">
                             <a class="details-link" href="/terrarium/{{ terrarium[0] }}">

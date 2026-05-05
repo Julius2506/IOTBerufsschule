@@ -21,11 +21,13 @@ def index():
                 latest.light,
                 latest.soil_moisture,
                 latest.motion,
-                latest.timestamp
+                latest.timestamp,
+                last_motion.last_motion_timestamp
                        
             FROM terrariums
             LEFT JOIN presets
                 ON terrariums.preset_id = presets.id
+
             LEFT JOIN (
                 SELECT sr1.*
                 FROM sensor_readings sr1
@@ -38,6 +40,17 @@ def index():
                 AND sr1.timestamp = sr2.max_timestamp
             ) AS latest
                 ON terrariums.id = latest.terrarium_id
+
+            LEFT JOIN (
+                SELECT
+                    terrarium_id,
+                    MAX(timestamp) AS last_motion_timestamp
+                FROM sensor_readings
+                WHERE motion = 1
+                GROUP BY terrarium_id
+            ) AS last_motion
+                ON terrariums.id = last_motion.terrarium_id
+
             ORDER BY terrariums.id ASC
         """)
 
