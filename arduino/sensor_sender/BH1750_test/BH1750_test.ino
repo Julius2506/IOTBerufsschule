@@ -100,10 +100,11 @@ void setup() {
 
   Wire.begin(21, 22);
 
-  if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE)) {
-    Serial.println("BH1750 gestartet");
+  if (lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, 0x23)) {
+    Serial.println("BH1750 gestartet auf Adresse 0x23");
+    delay(200);  // wichtig: erste Messung abwarten
   } else {
-    Serial.println("Fehler beim Starten des BH1750");
+    Serial.println("Fehler beim Starten des BH1750 auf Adresse 0x23");
   }
 
   connectToWiFi();
@@ -134,6 +135,12 @@ void loop() {
     float humidity = dht.readHumidity();
     float temperature = dht.readTemperature();
     float lux = lightMeter.readLightLevel();
+
+    if (lux < 0) {
+      Serial.print("BH1750 Fehler beim Lesen, Code: ");
+      Serial.println(lux);
+      lux = 0;
+    }
 
     int soilRaw = readSoilRaw();
     int soilMoisture = soilRawToPercent(soilRaw);
