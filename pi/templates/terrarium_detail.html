@@ -40,7 +40,7 @@
                             {{ readings[0][1] }} % Luftfeuchtigkeit · {{ readings[0][2] }} lx · {{ readings[0][3] }} % Bodenfeuchtigkeit
                         </p>
 
-                        <small>{{ readings[0][3] }}</small>
+                        
                     {% else %}
                         <div class="live-main-value muted">
                             --
@@ -169,7 +169,7 @@
                             <tbody>
                                 {% for reading in readings %}
                                     <tr>
-                                        <td>{{ reading[3] }}</td>
+                                        <td>{{ reading[5] }}</td>
                                         <td>
                                             <span class="table-value">{{ reading[0] }}</span>
                                             <small>°C</small>
@@ -183,11 +183,11 @@
                                             <small>lx</small>
                                         </td>
                                         <td>
-                                            <span class="table-value">{{ reading[4] }}</span>
+                                            <span class="table-value">{{ reading[3] }}</span>
                                             <small>%</small>
                                         </td>
                                     </tr>
-                                    
+
                                 {% endfor %}
                             </tbody>
                         </table>
