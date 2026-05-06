@@ -460,6 +460,16 @@ def api_terrariums():
                 AND sr1.timestamp = sr2.max_timestamp
             ) AS latest
                 ON terrariums.id = latest.terrarium_id
+                        LEFT JOIN (
+                SELECT
+                    terrarium_id,
+                    MAX(timestamp) AS last_motion_timestamp
+                FROM sensor_readings
+                WHERE motion = 1
+                GROUP BY terrarium_id
+            ) AS last_motion
+                ON terrariums.id = last_motion.terrarium_id
+
             ORDER BY terrariums.id ASC
         """)
 
