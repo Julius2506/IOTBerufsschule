@@ -1,5 +1,5 @@
 /* =========================================================
-   Rainforest Terrarium Hub - Clean Jungle UI
+   Rainforest Terrarium Hub 
    Datei: static/style.css
    ========================================================= */
 
@@ -192,7 +192,6 @@ p {
     transform: translateY(-1px);
 }
 
-/* Fallback, falls irgendwo noch die alte Navbar-Klasse genutzt wird */
 .navbar {
     margin: 0;
 }
@@ -1486,11 +1485,6 @@ p {
     margin-bottom: 0;
 }
 
-/* =========================================================
-   Legacy Compatibility
-   Alte Klassen werden neutral gehalten, falls noch irgendwo genutzt.
-   ========================================================= */
-
 .card-container,
 .card,
 .sensor-grid,
@@ -1687,7 +1681,7 @@ button {
 }
 
 /* =========================================================
-   Visual Fine Tuning
+   Visuelles Fine Tuning
    ========================================================= */
 
 /* Allgemeines Rendering */
@@ -1696,7 +1690,7 @@ body {
     text-rendering: optimizeLegibility;
 }
 
-/* Etwas angenehmere Textauswahl */
+/* angenehmere Textauswahl */
 ::selection {
     color: #07120b;
     background: var(--jungle-lime);
@@ -1711,7 +1705,7 @@ body {
         inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
-/* Navbar beim Hover etwas weicher */
+/* Navbar beim Hover weicher */
 .jungle-navbar {
     transition:
         border-color 0.2s ease,
@@ -1774,7 +1768,7 @@ body {
         );
 }
 
-/* Buttons: konsistenter und hochwertiger */
+/* Buttons */
 .jungle-button,
 .jungle-submit-button,
 .danger-button {
@@ -1801,7 +1795,7 @@ select:focus-visible {
     outline-offset: 3px;
 }
 
-/* Formulare: Inputs etwas edler */
+/* Formulare: Inputs hübscher */
 .jungle-form-group input,
 .jungle-form-group textarea,
 .jungle-form-group select {
@@ -1815,7 +1809,7 @@ select:focus-visible {
     background: rgba(255, 255, 255, 0.095);
 }
 
-/* Placeholder dezenter */
+/* Placeholder */
 .jungle-form-group input::placeholder,
 .jungle-form-group textarea::placeholder {
     opacity: 0.85;
@@ -1834,7 +1828,7 @@ select:focus-visible {
     background: rgba(255, 255, 255, 0.095);
 }
 
-/* Kleine Status-/Meta-Boxen einheitlicher */
+/* Kleine Status-Boxen einheitlicher */
 .meta-box,
 .preset-range-box,
 .preset-value,
@@ -1856,7 +1850,7 @@ select:focus-visible {
     background: rgba(255, 255, 255, 0.095);
 }
 
-/* Back-Link etwas eleganter */
+/* Back-Link eleganter */
 .back-link {
     width: fit-content;
     padding: 8px 0;
@@ -1870,7 +1864,7 @@ select:focus-visible {
     overflow-wrap: anywhere;
 }
 
-/* Mobile Feinschliff */
+/* Feinschliff */
 @media (max-width: 560px) {
     .jungle-navbar {
         margin-bottom: 4px;

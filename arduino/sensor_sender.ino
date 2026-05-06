@@ -17,14 +17,11 @@ const char* arduino_id = "terra1";
 
 #define PIRPIN 27   // HC-SR501 OUT an GPIO 27
 
-#define SOILPIN 34  // AO vom Bodenfeuchtigkeitssensor an D34 / GPIO34
+#define SOILPIN 34  // AO vom Bodenfeuchtigkeitssensor an D34
 
-#define LEDPIN 26   // LED an D26 / GPIO26
+#define LEDPIN 26   // LED an D26
 
 // Kalibrierwerte vom Bodenfeuchtigkeitssensor
-// Deine Messwerte:
-// Luft/trocken = 4095
-// Wasser/nass  = 1290
 const int SOIL_DRY_RAW = 4095;
 const int SOIL_WET_RAW = 1290;
 
@@ -154,7 +151,7 @@ void setup() {
 
   // BH1750 starten
   Wire.begin(21, 22);        // SDA = GPIO21, SCL = GPIO22
-  Wire.setClock(100000);     // I2C langsamer/stabiler machen
+  Wire.setClock(100000);    
 
   Serial.println("Starte BH1750...");
 
@@ -166,7 +163,7 @@ void setup() {
     Serial.println("BH1750 konnte NICHT gestartet werden auf Adresse 0x23");
   }
 
-  delay(500); // wichtig: erste Messung abwarten
+  delay(500); 
 
   connectToWiFi();
 
@@ -207,8 +204,6 @@ void loop() {
     if (lux < 0) {
       Serial.print("BH1750 Fehlercode: ");
       Serial.println(lux);
-
-      // Damit kein -1 oder -2 per MQTT gesendet wird
       lux = 0;
     }
 
