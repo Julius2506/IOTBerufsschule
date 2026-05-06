@@ -39,8 +39,6 @@
                         <p class="live-subline">
                             {{ readings[0][1] }} % Luftfeuchtigkeit · {{ readings[0][2] }} lx · {{ readings[0][3] }} % Bodenfeuchtigkeit
                         </p>
-
-                        
                     {% else %}
                         <div class="live-main-value muted">
                             --
@@ -53,6 +51,28 @@
 
                         <small>Warte auf die erste Messung.</small>
                     {% endif %}
+
+                    <div class="led-control-box">
+                        <p class="side-card-label">LED-Steuerung</p>
+
+                        <div class="led-button-row">
+                            <form method="POST"
+                                action="{{ url_for('control_led', terrarium_id=terrarium[0]) }}">
+                                <input type="hidden" name="action" value="ON">
+                                <button class="jungle-button compact" type="submit">
+                                    LED einschalten
+                                </button>
+                            </form>
+
+                            <form method="POST"
+                                action="{{ url_for('control_led', terrarium_id=terrarium[0]) }}">
+                                <input type="hidden" name="action" value="OFF">
+                                <button class="jungle-button secondary compact" type="submit">
+                                    LED ausschalten
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </section>
 

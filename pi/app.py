@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
+import paho.mqtt.publish as publish
 from database import get_connection
 
 app = Flask(__name__)
 
+MQTT_SERVER = "10.93.134.218"
+MQTT_PORT = 1883
 
 @app.route("/")
 def index():
@@ -359,7 +362,7 @@ def edit_preset(preset_id):
                 humidity_min,
                 humidity_max,
                 light_min,
-                light_max
+                light_max,
                 soil_moisture_min,
                 soil_moisture_max
             FROM presets
@@ -387,6 +390,40 @@ def delete_preset(preset_id):
         """, (preset_id,))
 
     return redirect(url_for("list_presets"))
+
+@app.route("/terrarium/<int:terrarium_id>/led", methods=["POST"])
+def control_led(terrarium_id):
+    action = request.form.get("action")
+
+    if action not in ["ON", "OFF"]:
+        return "Ungültige LED-Aktion", 400
+
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT arduino_id
+            FROM terrariums
+            WHERE id = ?
+        """, (terrarium_id,))
+
+        terrarium = cursor.fetchone()
+
+    if terrarium is None:
+        return "Terrarium nicht gefunden", 404
+
+    arduino_id = terrarium[0]
+
+    topic = f"terrarium/{arduino_id}/led/set"
+
+    publish.single(
+        topic,
+        payload=action,
+        hostname=MQTT_SERVER,
+        port=MQTT_PORT
+    )
+
+    return redirect(url_for("terrarium_detail", terrarium_id=terrarium_id))
 
 @app.route("/api/terrariums")
 def api_terrariums():
@@ -449,4 +486,4 @@ def api_terrariums():
     return jsonify(terrariums)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)

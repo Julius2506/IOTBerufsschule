@@ -1977,3 +1977,20 @@ select:focus-visible {
 
     transform: translateX(-58px);
 }
+
+.led-control-box {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.led-button-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+}
+
+.led-button-row form {
+    margin: 0;
+}
