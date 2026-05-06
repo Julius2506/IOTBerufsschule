@@ -5,7 +5,7 @@
 #include <BH1750.h>
 
 const char* ssid = "FES-SuS";
-const char* password = "SuS-WLAN!Key24";
+const char* password = "DEIN_WLAN_PASSWORT";
 
 const char* mqtt_server = "10.93.134.218";
 const int mqtt_port = 1883;
@@ -17,14 +17,23 @@ const char* arduino_id = "terra1";
 
 #define PIRPIN 27   // HC-SR501 OUT an GPIO 27
 
-#define SOILPIN 34  // AO vom Bodenfeuchtigkeitssensor an GPIO34
+#define SOILPIN 34  // AO vom Bodenfeuchtigkeitssensor an D34 / GPIO34
 
-// Diese Werte sind Startwerte.
-// Wir kalibrieren sie später mit deinen echten Messwerten.
-const int SOIL_DRY_RAW = 4095;  // komplett trocken
-const int SOIL_WET_RAW = 1500;  // sehr feucht / nass
+#define LEDPIN 26   // LED an D26 / GPIO26
+
+// Kalibrierwerte vom Bodenfeuchtigkeitssensor
+// Deine Messwerte:
+// Luft/trocken = 4095
+// Wasser/nass  = 1290
+const int SOIL_DRY_RAW = 4095;
+const int SOIL_WET_RAW = 1290;
+
+// MQTT Topics für LED
+const char* ledCommandTopic = "terrarium/terra1/led/set";
+const char* ledStateTopic   = "terrarium/terra1/led/state";
 
 bool motionSinceLastPublish = false;
+bool ledState = false;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -33,6 +42,42 @@ BH1750 lightMeter;
 
 unsigned long lastPublish = 0;
 const unsigned long publishInterval = 5000;
+
+void publishLedState() {
+  if (client.connected()) {
+    client.publish(ledStateTopic, ledState ? "ON" : "OFF", true);
+  }
+}
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  String message = "";
+
+  for (unsigned int i = 0; i < length; i++) {
+    message += (char)payload[i];
+  }
+
+  message.trim();
+
+  Serial.print("MQTT-Befehl empfangen auf Topic: ");
+  Serial.println(topic);
+  Serial.print("Payload: ");
+  Serial.println(message);
+
+  if (String(topic) == ledCommandTopic) {
+    if (message == "ON" || message == "on" || message == "1" || message == "true") {
+      ledState = true;
+      digitalWrite(LEDPIN, HIGH);
+      Serial.println("LED eingeschaltet");
+      publishLedState();
+    } 
+    else if (message == "OFF" || message == "off" || message == "0" || message == "false") {
+      ledState = false;
+      digitalWrite(LEDPIN, LOW);
+      Serial.println("LED ausgeschaltet");
+      publishLedState();
+    }
+  }
+}
 
 void connectToWiFi() {
   Serial.println("Verbinde mit WLAN...");
@@ -57,6 +102,12 @@ void connectToMQTT() {
 
     if (client.connect(clientId.c_str())) {
       Serial.println("verbunden");
+
+      client.subscribe(ledCommandTopic);
+      Serial.print("LED-Command-Topic abonniert: ");
+      Serial.println(ledCommandTopic);
+
+      publishLedState();
     } else {
       Serial.print("fehlgeschlagen, rc=");
       Serial.print(client.state());
@@ -79,9 +130,8 @@ int readSoilRaw() {
 }
 
 int soilRawToPercent(int rawValue) {
-  // Meist gilt bei diesen Sensoren:
-  // hoher Wert = trocken
-  // niedriger Wert = feucht
+  // Hoher Wert = trocken
+  // Niedriger Wert = feucht
   int percent = map(rawValue, SOIL_DRY_RAW, SOIL_WET_RAW, 0, 100);
   percent = constrain(percent, 0, 100);
   return percent;
@@ -95,6 +145,9 @@ void setup() {
 
   pinMode(PIRPIN, INPUT);
   pinMode(SOILPIN, INPUT);
+
+  pinMode(LEDPIN, OUTPUT);
+  digitalWrite(LEDPIN, LOW);
 
   analogReadResolution(12); // ESP32: Wertebereich 0 bis 4095
   analogSetPinAttenuation(SOILPIN, ADC_11db);
@@ -116,10 +169,13 @@ void setup() {
   delay(500); // wichtig: erste Messung abwarten
 
   connectToWiFi();
+
   client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
 
   Serial.println("PIR Bewegungssensor gestartet");
   Serial.println("Bodenfeuchtigkeitssensor gestartet");
+  Serial.println("LED-Steuerung gestartet");
 }
 
 void loop() {
@@ -131,11 +187,11 @@ void loop() {
     connectToMQTT();
   }
 
+  client.loop();
+
   if (digitalRead(PIRPIN) == HIGH) {
     motionSinceLastPublish = true;
   }
-
-  client.loop();
 
   unsigned long now = millis();
 
@@ -178,18 +234,28 @@ void loop() {
     payload += motionDetected ? "true" : "false";
     payload += ",";
     payload += "\"soil_raw\":" + String(soilRaw) + ",";
-    payload += "\"soil_moisture\":" + String(soilMoisture);
+    payload += "\"soil_moisture\":" + String(soilMoisture) + ",";
+    payload += "\"led\":";
+    payload += ledState ? "true" : "false";
     payload += "}";
 
     String topic = "terrarium/" + String(arduino_id) + "/sensor";
 
     bool ok = client.publish(topic.c_str(), payload.c_str());
 
-    Serial.println("Sende MQTT-Nachricht mit DHT11 + BH1750 + PIR + Bodenfeuchtigkeit...");
+    Serial.println("Sende MQTT-Nachricht mit DHT11 + BH1750 + PIR + Bodenfeuchtigkeit + LED...");
     Serial.print("Topic: ");
     Serial.println(topic);
     Serial.print("Payload: ");
     Serial.println(payload);
+
+    Serial.print("Temperatur: ");
+    Serial.print(temperature);
+    Serial.println(" °C");
+
+    Serial.print("Luftfeuchtigkeit: ");
+    Serial.print(humidity);
+    Serial.println(" %");
 
     Serial.print("Lichtwert: ");
     Serial.print(lux);
@@ -204,6 +270,9 @@ void loop() {
     Serial.print("Bodenfeuchte Prozent: ");
     Serial.print(soilMoisture);
     Serial.println(" %");
+
+    Serial.print("LED Status: ");
+    Serial.println(ledState ? "AN" : "AUS");
 
     Serial.print("Erfolgreich: ");
     Serial.println(ok ? "ja" : "nein");
