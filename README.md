@@ -1,6 +1,6 @@
 IoT-Smartterrarium (README)
 
-# :warning: WICHTIGE INFORMATION ZUR BEWERTUNG VOR DEM LESEN: :warning:
+#  WICHTIGE INFORMATION ZUR BEWERTUNG VOR DEM LESEN: 
 
 Bitte beachten Sie die folgenden Hinweise zu den Projektmitgliedern und der Arbeitsaufteilung, da die eigentliche/ der Realität entsprechenden Versionshistorie durch den Abgabeprozess nicht mehr im System sichtbar ist.
 
